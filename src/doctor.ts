@@ -4,7 +4,7 @@ import path from "node:path";
 import { promisify } from "node:util";
 import { CONNECTOR_PRESETS } from "./connector-presets.js";
 import { parseHermesConfig } from "./config-generator.js";
-import { DEFAULT_PROFILE_NAME, resolveHermesHome, resolvePackageSkillsDir } from "./paths.js";
+import { DEFAULT_PROFILE_NAME, resolveHermesHome, resolveProfileSkillsDir } from "./paths.js";
 
 const execFileAsync = promisify(execFile);
 
@@ -37,7 +37,7 @@ export async function doctorDelxWellnessHermesProfile(options: DoctorOptions = {
   const profileName = options.profileName ?? DEFAULT_PROFILE_NAME;
   const hermesHome = options.hermesHome ?? resolveHermesHome(profileName);
   const configPath = path.join(hermesHome, "config.yaml");
-  const expectedSkillsDir = options.skillsDir ?? resolvePackageSkillsDir(options.packageRoot);
+  const expectedSkillsDir = options.skillsDir ?? resolveProfileSkillsDir(hermesHome);
   const checks: DoctorCheck[] = [];
 
   const profileExists = await exists(hermesHome);

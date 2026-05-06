@@ -12,6 +12,7 @@ import {
   DEFAULT_PROFILE_NAME,
   resolveHermesHome,
   resolvePackageSkillsDir,
+  resolveProfileSkillsDir,
   resolvePackageTemplatePath
 } from "./paths.js";
 
@@ -40,7 +41,8 @@ export async function installDelxWellnessHermesProfile(options: InstallOptions =
 
   const hermesHome = options.hermesHome ?? resolveHermesHome(profileName);
   const configPath = path.join(hermesHome, "config.yaml");
-  const skillsDir = options.skillsDir ?? resolvePackageSkillsDir(options.packageRoot);
+  const packageSkillsDir = resolvePackageSkillsDir(options.packageRoot);
+  const skillsDir = options.skillsDir ?? resolveProfileSkillsDir(hermesHome);
   const generated = buildHermesProfileConfig({
     ...options,
     profileName,
@@ -61,7 +63,8 @@ export async function installDelxWellnessHermesProfile(options: InstallOptions =
         configPath,
         path.join(hermesHome, "SOUL.md"),
         path.join(hermesHome, "AGENTS.md"),
-        path.join(hermesHome, "ONBOARDING.md")
+        path.join(hermesHome, "ONBOARDING.md"),
+        skillsDir
       ],
       renderedConfig
     };
@@ -72,6 +75,11 @@ export async function installDelxWellnessHermesProfile(options: InstallOptions =
   await fs.writeFile(configPath, renderedConfig, "utf8");
 
   const changedFiles = [configPath];
+  await fs.rm(skillsDir, { recursive: true, force: true });
+  await fs.mkdir(path.dirname(skillsDir), { recursive: true });
+  await fs.cp(packageSkillsDir, skillsDir, { recursive: true });
+  changedFiles.push(skillsDir);
+
   for (const templateName of ["SOUL.md", "AGENTS.md", "ONBOARDING.md"] as const) {
     const destination = path.join(hermesHome, templateName);
     await backupIfExists(destination);

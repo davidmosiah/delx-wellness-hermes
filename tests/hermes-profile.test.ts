@@ -115,12 +115,15 @@ test("installer write creates public-safe Hermes profile files", async () => {
   const soul = await fs.readFile(path.join(hermesHome, "SOUL.md"), "utf8");
   const agents = await fs.readFile(path.join(hermesHome, "AGENTS.md"), "utf8");
   const onboarding = await fs.readFile(path.join(hermesHome, "ONBOARDING.md"), "utf8");
+  const copiedSkill = await fs.readFile(path.join(hermesHome, "skills", "delx-wellness", "delx-wellness-onboarding", "SKILL.md"), "utf8");
 
   assert.match(config, /delx-wellness-hermes/);
+  assert.match(config, /skills\/delx-wellness/);
   assert.match(soul, /not a doctor/i);
   assert.match(soul, /freshness/i);
   assert.match(agents, /Never print/i);
   assert.match(onboarding, /Devices and Data Sources/i);
+  assert.match(copiedSkill, /Delx Wellness Onboarding/i);
 
   const doctor = await doctorDelxWellnessHermesProfile({ hermesHome, packageRoot });
   assert.equal(doctor.ready, true);
