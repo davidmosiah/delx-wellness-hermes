@@ -1,7 +1,7 @@
 {
   "name": "delx-wellness-hermes",
-  "version": "0.1.2",
-  "description": "Public-safe Delx Wellness profile pack for Hermes with MCP connector presets, wellness skills, SOUL templates, installer, and doctor checks.",
+  "version": "0.2.0",
+  "description": "Turn Hermes into a local-first wellness agent with guided setup, onboarding, MCP connector presets, wellness skills and doctor checks.",
   "license": "MIT",
   "homepage": "https://wellness.delx.ai/hermes",
   "repository": {
@@ -16,6 +16,7 @@
     "wellness",
     "mcp",
     "ai-agents",
+    "hermes-agent",
     "wearables",
     "whoop",
     "garmin",

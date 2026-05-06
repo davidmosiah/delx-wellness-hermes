@@ -11,7 +11,8 @@ import {
   installDelxWellnessHermesProfile,
   mergeHermesConfig,
   parseHermesConfig,
-  renderDryRunConfig
+  renderDryRunConfig,
+  setupDelxWellnessHermes
 } from "../src/index.ts";
 
 const packageRoot = process.cwd();
@@ -163,6 +164,38 @@ exit 2
   assert.equal(doctor.ready, false);
   assert.equal(doctor.checks.find((check) => check.id === "hermes_chat_runtime")?.ok, false);
   assert.match(doctor.checks.find((check) => check.id === "hermes_chat_runtime")?.message ?? "", /No inference provider configured/i);
+});
+
+test("setup command writes the wellness profile and runs Hermes checks when available", async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "delx-wellness-hermes-setup-"));
+  const hermesHome = path.join(tempDir, ".hermes", "profiles", "delx-wellness");
+  const hermesBinary = path.join(tempDir, "fake-hermes");
+
+  await fs.writeFile(hermesBinary, `#!/usr/bin/env bash
+if [[ "$*" == "--version" ]]; then
+  echo "Hermes Agent v0.12.0"
+  exit 0
+fi
+if [[ "$*" == "-p delx-wellness mcp list" ]]; then
+  echo "MCP Servers:"
+  exit 0
+fi
+exit 2
+`, "utf8");
+  await fs.chmod(hermesBinary, 0o755);
+
+  const setup = await setupDelxWellnessHermes({
+    hermesHome,
+    packageRoot,
+    hermesBinary,
+    skipSmoke: true
+  });
+
+  assert.equal(setup.dryRun, false);
+  assert.equal(setup.hermesDetected, true);
+  assert.equal(setup.doctor?.ready, true);
+  assert.match(setup.nextSteps.join("\n"), /hermes -p delx-wellness model/);
+  assert.equal(await exists(path.join(hermesHome, "config.yaml")), true);
 });
 
 test("onboarding command model covers profile, goals, devices, nutrition, exercise, and safety", async () => {

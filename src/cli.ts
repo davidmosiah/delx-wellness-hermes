@@ -1,6 +1,7 @@
 import { doctorDelxWellnessHermesProfile } from "./doctor.js";
 import { installDelxWellnessHermesProfile } from "./install.js";
 import { createOnboardingFile, formatOnboardingQuestions } from "./onboarding.js";
+import { formatSetupResult, setupDelxWellnessHermes } from "./setup.js";
 
 type ParsedArgs = {
   command: string;
@@ -26,6 +27,21 @@ async function main(argv: string[]): Promise<void> {
     }, null, 2));
     console.log("--- redacted config preview ---");
     console.log(result.renderedConfig.trimEnd());
+    return;
+  }
+
+  if (parsed.command === "setup") {
+    const result = await setupDelxWellnessHermes({
+      profileName: stringOption(parsed.options.profile, "delx-wellness"),
+      mode: parsed.options.mode === "hosted" ? "hosted" : "local",
+      hubUrl: stringOption(parsed.options["hub-url"], undefined),
+      dryRun: parsed.options["dry-run"] === false,
+      hermesBinary: stringOption(parsed.options.hermes, undefined),
+      skipSmoke: parsed.options["skip-smoke"] === true,
+      testChat: parsed.options["test-chat"] === true
+    });
+    console.log(formatSetupResult(result));
+    process.exitCode = result.doctor?.ready === false ? 1 : 0;
     return;
   }
 
@@ -94,6 +110,8 @@ function stringOption(value: string | boolean | undefined, fallback: string | un
 
 function printUsage(): void {
   console.error(`Usage:
+  delx-wellness-hermes setup
+  delx-wellness-hermes setup --dry-run
   delx-wellness-hermes install --profile delx-wellness --dry-run
   delx-wellness-hermes install --profile delx-wellness --write
   delx-wellness-hermes doctor --profile delx-wellness
