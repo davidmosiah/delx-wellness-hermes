@@ -1,0 +1,151 @@
+export type ConnectorId =
+  | "whoop"
+  | "garmin"
+  | "oura"
+  | "strava"
+  | "fitbit"
+  | "withings"
+  | "apple_health"
+  | "polar"
+  | "nourish"
+  | "exercise_catalog";
+
+export type ConnectorPreset = {
+  id: ConnectorId;
+  displayName: string;
+  packageName?: string | undefined;
+  binaryName?: string | undefined;
+  enabledByDefault: boolean;
+  category: "physiology" | "activity" | "nutrition" | "exercise";
+  privacy: "local-first" | "oauth-local-token" | "private-catalog";
+  notes: string;
+};
+
+export type HermesMcpServerConfig = {
+  command?: string;
+  args?: string[];
+  url?: string;
+  headers?: Record<string, string>;
+};
+
+export const CONNECTOR_PRESETS = [
+  {
+    id: "whoop",
+    displayName: "WHOOP",
+    packageName: "whoop-mcp-unofficial",
+    binaryName: "whoop-mcp-unofficial",
+    enabledByDefault: true,
+    category: "physiology",
+    privacy: "oauth-local-token",
+    notes: "Recovery, strain, sleep, HRV, resting heart rate, and workouts."
+  },
+  {
+    id: "garmin",
+    displayName: "Garmin",
+    packageName: "garmin-mcp-unofficial",
+    binaryName: "garmin-mcp-unofficial",
+    enabledByDefault: true,
+    category: "physiology",
+    privacy: "oauth-local-token",
+    notes: "Training load, activities, readiness-style context, sleep, and wellness signals."
+  },
+  {
+    id: "oura",
+    displayName: "Oura",
+    packageName: "oura-mcp-unofficial",
+    binaryName: "oura-mcp-unofficial",
+    enabledByDefault: true,
+    category: "physiology",
+    privacy: "oauth-local-token",
+    notes: "Readiness, sleep, activity, HRV, and recovery context."
+  },
+  {
+    id: "strava",
+    displayName: "Strava",
+    packageName: "strava-mcp-unofficial",
+    binaryName: "strava-mcp-unofficial",
+    enabledByDefault: true,
+    category: "activity",
+    privacy: "oauth-local-token",
+    notes: "Training history, workouts, load proxies, activities, and effort context."
+  },
+  {
+    id: "fitbit",
+    displayName: "Fitbit",
+    packageName: "fitbit-mcp-unofficial",
+    binaryName: "fitbit-mcp-unofficial",
+    enabledByDefault: true,
+    category: "physiology",
+    privacy: "oauth-local-token",
+    notes: "Activity, sleep, heart rate, steps, and calorie context."
+  },
+  {
+    id: "withings",
+    displayName: "Withings",
+    packageName: "withings-mcp-unofficial",
+    binaryName: "withings-mcp-unofficial",
+    enabledByDefault: true,
+    category: "physiology",
+    privacy: "oauth-local-token",
+    notes: "Body composition, measurements, sleep, and health-device context."
+  },
+  {
+    id: "apple_health",
+    displayName: "Apple Health",
+    packageName: "apple-health-mcp-unofficial",
+    binaryName: "apple-health-mcp-unofficial",
+    enabledByDefault: true,
+    category: "physiology",
+    privacy: "local-first",
+    notes: "Local Apple Health exports and aggregated wellness records."
+  },
+  {
+    id: "polar",
+    displayName: "Polar",
+    packageName: "polar-mcp-unofficial",
+    binaryName: "polar-mcp-unofficial",
+    enabledByDefault: true,
+    category: "physiology",
+    privacy: "oauth-local-token",
+    notes: "Training, recovery-adjacent, heart rate, and activity context."
+  },
+  {
+    id: "nourish",
+    displayName: "Nourish",
+    packageName: "wellness-nourish",
+    binaryName: "wellness-nourish",
+    enabledByDefault: true,
+    category: "nutrition",
+    privacy: "local-first",
+    notes: "Food search, meal parsing, local nutrition logging, barcode, and pt-BR input."
+  },
+  {
+    id: "exercise_catalog",
+    displayName: "Exercise Catalog",
+    binaryName: "exercise-catalog-mcp-server",
+    enabledByDefault: false,
+    category: "exercise",
+    privacy: "private-catalog",
+    notes: "Private exercise catalog for workout building with instructions and media."
+  }
+] as const satisfies readonly ConnectorPreset[];
+
+export function getConnectorPreset(id: ConnectorId): ConnectorPreset {
+  const preset = CONNECTOR_PRESETS.find((candidate) => candidate.id === id);
+  if (!preset) throw new Error(`Unknown connector preset: ${id}`);
+  return preset;
+}
+
+export function defaultConnectorIds(): ConnectorId[] {
+  return CONNECTOR_PRESETS
+    .filter((preset) => preset.enabledByDefault)
+    .map((preset) => preset.id);
+}
+
+export function buildLocalMcpServerConfig(preset: ConnectorPreset): HermesMcpServerConfig | undefined {
+  if (!preset.packageName) return undefined;
+  return {
+    command: "npx",
+    args: ["-y", preset.packageName]
+  };
+}

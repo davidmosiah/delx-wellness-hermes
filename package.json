@@ -1,0 +1,60 @@
+{
+  "name": "delx-wellness-hermes",
+  "version": "0.1.0",
+  "description": "Public-safe Delx Wellness profile pack for Hermes with MCP connector presets, wellness skills, SOUL templates, installer, and doctor checks.",
+  "license": "MIT",
+  "homepage": "https://wellness.delx.ai/hermes",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidmosiah/delx-wellness-hermes.git"
+  },
+  "bugs": {
+    "url": "https://github.com/davidmosiah/delx-wellness-hermes/issues"
+  },
+  "keywords": [
+    "hermes",
+    "wellness",
+    "mcp",
+    "ai-agents",
+    "wearables",
+    "whoop",
+    "garmin",
+    "oura",
+    "fitbit",
+    "nutrition",
+    "delx"
+  ],
+  "type": "module",
+  "bin": {
+    "delx-wellness-hermes": "bin/delx-wellness-hermes.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "skills",
+    "templates",
+    "LICENSE",
+    "README.md"
+  ],
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "npm run typecheck && tsx --test tests/*.test.ts",
+    "prepack": "npm run build",
+    "doctor": "tsx src/cli.ts doctor",
+    "install:dry-run": "tsx src/cli.ts install --dry-run",
+    "onboarding": "tsx src/cli.ts onboarding"
+  },
+  "dependencies": {
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "tsx": "^4.20.6",
+    "typescript": "^6.0.3"
+  }
+}
