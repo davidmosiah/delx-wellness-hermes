@@ -16,6 +16,7 @@ export type DoctorOptions = {
   runHermes?: boolean;
   hermesBinary?: string | undefined;
   testConnectors?: string[] | undefined;
+  testChat?: boolean | undefined;
 };
 
 export type DoctorCheck = {
@@ -72,6 +73,14 @@ export async function doctorDelxWellnessHermesProfile(options: DoctorOptions = {
     const hermesBinary = options.hermesBinary ?? "hermes";
     checks.push(await runHermesCheck("hermes_version", hermesBinary, ["--version"]));
     checks.push(await runHermesCheck("hermes_mcp_list", hermesBinary, ["-p", profileName, "mcp", "list"]));
+    if (options.testChat) {
+      checks.push(await runHermesCheck("hermes_chat_runtime", hermesBinary, [
+        "-p",
+        profileName,
+        "-z",
+        "Reply with exactly: delx-wellness-hermes-ok"
+      ]));
+    }
     for (const connector of options.testConnectors ?? []) {
       checks.push(await runHermesCheck(`hermes_mcp_test_${connector}`, hermesBinary, ["-p", profileName, "mcp", "test", connector]));
     }
@@ -122,7 +131,7 @@ async function runHermesCheck(id: string, command: string, args: string[]): Prom
     return {
       id,
       ok: false,
-      message: redactOutput(error instanceof Error ? error.message : String(error))
+      message: formatCommandError(error)
     };
   }
 }
@@ -156,4 +165,30 @@ function redactOutput(value: string): string {
   return value
     .replace(/Bearer\s+[A-Za-z0-9._~+/=-]+/gi, "Bearer [redacted]")
     .replace(/(token|secret|password|api[_-]?key)=\S+/gi, "$1=[redacted]");
+}
+
+function formatCommandError(error: unknown): string {
+  const message = error instanceof Error ? error.message : String(error);
+  const stderr = getStringProperty(error, "stderr");
+  const stdout = getStringProperty(error, "stdout");
+  const output = redactOutput(`${stdout}\n${stderr}`.trim() || message);
+  const lines = output.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  const important = findLast(lines, (line) => /AuthError|Error:|No inference provider configured|not configured/i.test(line));
+  if (important) return important;
+  if (lines.length > 0) return lines.slice(-3).join(" | ");
+  return redactOutput(message);
+}
+
+function getStringProperty(value: unknown, key: string): string {
+  if (typeof value !== "object" || value === null || !(key in value)) return "";
+  const property = (value as Record<string, unknown>)[key];
+  return typeof property === "string" ? property : "";
+}
+
+function findLast<T>(items: T[], predicate: (item: T) => boolean): T | undefined {
+  for (let index = items.length - 1; index >= 0; index -= 1) {
+    const item = items[index];
+    if (item !== undefined && predicate(item)) return item;
+  }
+  return undefined;
 }

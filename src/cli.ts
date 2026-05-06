@@ -33,6 +33,7 @@ async function main(argv: string[]): Promise<void> {
     const report = await doctorDelxWellnessHermesProfile({
       profileName: stringOption(parsed.options.profile, "delx-wellness"),
       runHermes: parsed.options["run-hermes"] === true,
+      testChat: parsed.options["test-chat"] === true,
       hermesBinary: stringOption(parsed.options.hermes, undefined),
       testConnectors: stringOption(parsed.options["test-connectors"], undefined)?.split(",").map((item) => item.trim()).filter(Boolean)
     });
@@ -97,6 +98,7 @@ function printUsage(): void {
   delx-wellness-hermes install --profile delx-wellness --write
   delx-wellness-hermes doctor --profile delx-wellness
   delx-wellness-hermes doctor --profile delx-wellness --run-hermes
+  delx-wellness-hermes doctor --profile delx-wellness --run-hermes --test-chat
   delx-wellness-hermes onboarding --profile delx-wellness
 `);
 }

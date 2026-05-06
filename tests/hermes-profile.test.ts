@@ -129,6 +129,42 @@ test("installer write creates public-safe Hermes profile files", async () => {
   assert.equal(doctor.ready, true);
 });
 
+test("doctor test-chat surfaces missing Hermes inference provider", async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "delx-wellness-hermes-doctor-"));
+  const hermesHome = path.join(tempDir, ".hermes", "profiles", "delx-wellness");
+  const hermesBinary = path.join(tempDir, "fake-hermes");
+
+  await installDelxWellnessHermesProfile({ hermesHome, packageRoot, write: true });
+  await fs.writeFile(hermesBinary, `#!/usr/bin/env bash
+if [[ "$*" == "--version" ]]; then
+  echo "Hermes Agent v0.12.0"
+  exit 0
+fi
+if [[ "$*" == "-p delx-wellness mcp list" ]]; then
+  echo "MCP Servers:"
+  exit 0
+fi
+if [[ "$*" == *"-z"* ]]; then
+  echo "No inference provider configured" >&2
+  exit 1
+fi
+exit 2
+`, "utf8");
+  await fs.chmod(hermesBinary, 0o755);
+
+  const doctor = await doctorDelxWellnessHermesProfile({
+    hermesHome,
+    packageRoot,
+    runHermes: true,
+    hermesBinary,
+    testChat: true
+  });
+
+  assert.equal(doctor.ready, false);
+  assert.equal(doctor.checks.find((check) => check.id === "hermes_chat_runtime")?.ok, false);
+  assert.match(doctor.checks.find((check) => check.id === "hermes_chat_runtime")?.message ?? "", /No inference provider configured/i);
+});
+
 test("onboarding command model covers profile, goals, devices, nutrition, exercise, and safety", async () => {
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "delx-wellness-onboarding-"));
   const hermesHome = path.join(tempDir, ".hermes", "profiles", "delx-wellness");

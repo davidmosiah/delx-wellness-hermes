@@ -47,6 +47,27 @@ If Hermes is available locally:
 npx delx-wellness-hermes doctor --profile delx-wellness --run-hermes
 ```
 
+Run Hermes with the wellness profile:
+
+```bash
+hermes -p delx-wellness
+```
+
+For real chat, configure an inference provider for the profile first:
+
+```bash
+hermes -p delx-wellness model
+```
+
+You can also add provider keys to `~/.hermes/profiles/delx-wellness/.env`.
+To prove the profile can actually complete a chat response, run:
+
+```bash
+npx delx-wellness-hermes doctor --profile delx-wellness --run-hermes --test-chat
+```
+
+`--test-chat` makes a short Hermes model call, so it requires a configured provider and may use your provider quota. MCP-only checks do not require model access.
+
 ## Onboarding
 
 The onboarding flow guides the agent through the context a real wellness product needs:
@@ -76,6 +97,14 @@ Default local MCP presets:
 - Apple Health: `apple-health-mcp-unofficial`
 - Polar: `polar-mcp-unofficial`
 - Nourish: `wellness-nourish`
+
+Smoke-test a connector through Hermes:
+
+```bash
+hermes -p delx-wellness mcp list
+hermes -p delx-wellness mcp test nourish
+hermes -p delx-wellness mcp test whoop
+```
 
 Hosted hub mode is explicit and has no default production URL:
 
