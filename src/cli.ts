@@ -11,6 +11,11 @@ type ParsedArgs = {
 async function main(argv: string[]): Promise<void> {
   const parsed = parseArgs(argv);
 
+  if (parsed.command === "help" || parsed.command === "--help" || parsed.command === "-h") {
+    printUsage();
+    return;
+  }
+
   if (parsed.command === "install") {
     const result = await installDelxWellnessHermesProfile({
       profileName: stringOption(parsed.options.profile, "delx-wellness"),
@@ -109,7 +114,7 @@ function stringOption(value: string | boolean | undefined, fallback: string | un
 }
 
 function printUsage(): void {
-  console.error(`Usage:
+  console.log(`Usage:
   delx-wellness-hermes setup
   delx-wellness-hermes setup --dry-run
   delx-wellness-hermes install --profile delx-wellness --dry-run

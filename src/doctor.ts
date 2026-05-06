@@ -7,6 +7,9 @@ import { parseHermesConfig } from "./config-generator.js";
 import { DEFAULT_PROFILE_NAME, resolveHermesHome, resolveProfileSkillsDir } from "./paths.js";
 
 const execFileAsync = promisify(execFile);
+const DEFAULT_HERMES_CHECK_TIMEOUT_MS = 30_000;
+const CHAT_RUNTIME_TIMEOUT_MS = 90_000;
+const MCP_SMOKE_TIMEOUT_MS = 120_000;
 
 export type DoctorOptions = {
   profileName?: string;
@@ -119,8 +122,9 @@ export async function doctorDelxWellnessHermesProfile(options: DoctorOptions = {
 }
 
 async function runHermesCheck(id: string, command: string, args: string[]): Promise<DoctorCheck> {
+  const timeout = hermesCheckTimeout(args);
   try {
-    const { stdout, stderr } = await execFileAsync(command, args, { timeout: 30_000, maxBuffer: 64_000 });
+    const { stdout, stderr } = await execFileAsync(command, args, { timeout, maxBuffer: 256_000 });
     const output = `${stdout}${stderr}`.trim();
     return {
       id,
@@ -131,9 +135,14 @@ async function runHermesCheck(id: string, command: string, args: string[]): Prom
     return {
       id,
       ok: false,
-      message: formatCommandError(error)
+      message: formatCommandError(error, timeout)
     };
   }
+}
+
+function hermesCheckTimeout(args: string[]): number {
+  if (args.includes("-z")) return CHAT_RUNTIME_TIMEOUT_MS;
+  return args.includes("mcp") && args.includes("test") ? MCP_SMOKE_TIMEOUT_MS : DEFAULT_HERMES_CHECK_TIMEOUT_MS;
 }
 
 async function readConfigIfPresent(configPath: string): Promise<Record<string, unknown> | undefined> {
@@ -167,12 +176,17 @@ function redactOutput(value: string): string {
     .replace(/(token|secret|password|api[_-]?key)=\S+/gi, "$1=[redacted]");
 }
 
-function formatCommandError(error: unknown): string {
+function formatCommandError(error: unknown, timeoutMs: number): string {
   const message = error instanceof Error ? error.message : String(error);
   const stderr = getStringProperty(error, "stderr");
   const stdout = getStringProperty(error, "stdout");
   const output = redactOutput(`${stdout}\n${stderr}`.trim() || message);
   const lines = output.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  const timedOut = getBooleanProperty(error, "killed") || /timed out|timeout|SIGTERM/i.test(message);
+  if (timedOut) {
+    const lastOutput = lines.length > 0 ? ` Last output: ${lines.slice(-3).join(" | ")}` : "";
+    return `Command timed out after ${Math.round(timeoutMs / 1000)}s.${lastOutput}`;
+  }
   const important = findLast(lines, (line) => /AuthError|Error:|No inference provider configured|not configured/i.test(line));
   if (important) return important;
   if (lines.length > 0) return lines.slice(-3).join(" | ");
@@ -183,6 +197,11 @@ function getStringProperty(value: unknown, key: string): string {
   if (typeof value !== "object" || value === null || !(key in value)) return "";
   const property = (value as Record<string, unknown>)[key];
   return typeof property === "string" ? property : "";
+}
+
+function getBooleanProperty(value: unknown, key: string): boolean {
+  if (typeof value !== "object" || value === null || !(key in value)) return false;
+  return (value as Record<string, unknown>)[key] === true;
 }
 
 function findLast<T>(items: T[], predicate: (item: T) => boolean): T | undefined {
