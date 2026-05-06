@@ -15,6 +15,7 @@ import {
   resolveProfileSkillsDir,
   resolvePackageTemplatePath
 } from "./paths.js";
+import { stringifyWellnessProfile } from "./wellness-profile.js";
 
 export type InstallOptions = Omit<BuildHermesProfileConfigOptions, "skillsDir"> & {
   profileName?: string;
@@ -41,6 +42,7 @@ export async function installDelxWellnessHermesProfile(options: InstallOptions =
 
   const hermesHome = options.hermesHome ?? resolveHermesHome(profileName);
   const configPath = path.join(hermesHome, "config.yaml");
+  const wellnessProfilePath = path.join(hermesHome, "wellness-profile.json");
   const packageSkillsDir = resolvePackageSkillsDir(options.packageRoot);
   const skillsDir = options.skillsDir ?? resolveProfileSkillsDir(hermesHome);
   const generated = buildHermesProfileConfig({
@@ -64,6 +66,7 @@ export async function installDelxWellnessHermesProfile(options: InstallOptions =
         path.join(hermesHome, "SOUL.md"),
         path.join(hermesHome, "AGENTS.md"),
         path.join(hermesHome, "ONBOARDING.md"),
+        wellnessProfilePath,
         skillsDir
       ],
       renderedConfig
@@ -75,6 +78,11 @@ export async function installDelxWellnessHermesProfile(options: InstallOptions =
   await fs.writeFile(configPath, renderedConfig, "utf8");
 
   const changedFiles = [configPath];
+  if (!(await exists(wellnessProfilePath))) {
+    await fs.writeFile(wellnessProfilePath, stringifyWellnessProfile(), "utf8");
+    changedFiles.push(wellnessProfilePath);
+  }
+
   await fs.rm(skillsDir, { recursive: true, force: true });
   await fs.mkdir(path.dirname(skillsDir), { recursive: true });
   await fs.cp(packageSkillsDir, skillsDir, { recursive: true });
@@ -115,6 +123,16 @@ async function backupIfExists(filePath: string): Promise<void> {
   }
   const backupPath = `${filePath}.bak.${new Date().toISOString().replace(/[:.]/g, "-")}`;
   await fs.copyFile(filePath, backupPath);
+}
+
+async function exists(filePath: string): Promise<boolean> {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch (error) {
+    if (isNotFound(error)) return false;
+    throw error;
+  }
 }
 
 function isNotFound(error: unknown): boolean {

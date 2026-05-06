@@ -2,6 +2,10 @@
 
 This onboarding helps the agent understand the user's body context, goals, devices, and constraints without collecting medical claims.
 
+Default to English for the global agent market. Use pt-BR when the user asks for it or has `pt-BR` in `wellness-profile.json`.
+
+Store the final non-secret preferences in `wellness-profile.json`. Never store OAuth tokens, cookies, API keys, refresh tokens, or raw provider secrets in this file.
+
 ## Profile Basics
 
 - Preferred name:

@@ -1,5 +1,6 @@
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import type { ConnectorId } from "./connector-presets.js";
 import { doctorDelxWellnessHermesProfile, type DoctorReport } from "./doctor.js";
 import { installDelxWellnessHermesProfile, type InstallResult } from "./install.js";
 import { ONBOARDING_QUESTIONS } from "./onboarding.js";
@@ -10,6 +11,8 @@ const execFileAsync = promisify(execFile);
 export type SetupOptions = {
   profileName?: string;
   mode?: "local" | "hosted";
+  connectorMode?: "full" | "lite";
+  connectorIds?: ConnectorId[];
   hubUrl?: string | undefined;
   hermesHome?: string | undefined;
   packageRoot?: string | undefined;
@@ -37,6 +40,8 @@ export async function setupDelxWellnessHermes(options: SetupOptions = {}): Promi
     write: !dryRun
   };
   if (options.mode !== undefined) installOptions.mode = options.mode;
+  if (options.connectorMode !== undefined) installOptions.connectorMode = options.connectorMode;
+  if (options.connectorIds !== undefined) installOptions.connectorIds = options.connectorIds;
   if (options.hubUrl !== undefined) installOptions.hubUrl = options.hubUrl;
   if (options.hermesHome !== undefined) installOptions.hermesHome = options.hermesHome;
   if (options.packageRoot !== undefined) installOptions.packageRoot = options.packageRoot;

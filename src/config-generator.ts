@@ -4,18 +4,21 @@ import {
   ConnectorId,
   HermesMcpServerConfig,
   buildLocalMcpServerConfig,
-  defaultConnectorIds
+  defaultConnectorIds,
+  liteConnectorIds
 } from "./connector-presets.js";
 import { DEFAULT_PROFILE_NAME } from "./paths.js";
 
 export type PlainConfig = Record<string, unknown>;
 
 export type ConnectorMode = "local" | "hosted";
+export type ConnectorLoadMode = "full" | "lite";
 
 export type BuildHermesProfileConfigOptions = {
   profileName?: string;
   skillsDir: string;
   mode?: ConnectorMode;
+  connectorMode?: ConnectorLoadMode;
   connectorIds?: ConnectorId[];
   hubUrl?: string | undefined;
 };
@@ -23,7 +26,8 @@ export type BuildHermesProfileConfigOptions = {
 export function buildHermesProfileConfig(options: BuildHermesProfileConfigOptions): PlainConfig {
   const profileName = options.profileName ?? DEFAULT_PROFILE_NAME;
   const mode = options.mode ?? "local";
-  const connectorIds = options.connectorIds ?? defaultConnectorIds();
+  const connectorIds = options.connectorIds ?? (options.connectorMode === "lite" ? liteConnectorIds() : defaultConnectorIds());
+  const connectorMode = options.connectorIds ? "custom" : options.connectorMode ?? "full";
   const mcpServers: Record<string, HermesMcpServerConfig> = {};
 
   if (mode === "hosted") {
@@ -53,10 +57,12 @@ export function buildHermesProfileConfig(options: BuildHermesProfileConfigOption
     delx_wellness: {
       profile_name: profileName,
       mode,
+      connector_mode: connectorMode,
       generated_by: "delx-wellness-hermes",
       onboarding: {
         required: true,
         template: "ONBOARDING.md",
+        profile_path: "wellness-profile.json",
         next_step: "Run `delx-wellness-hermes onboarding --profile delx-wellness` or ask Hermes to use the delx-wellness-onboarding skill."
       },
       connectors: CONNECTOR_PRESETS.map((preset) => ({

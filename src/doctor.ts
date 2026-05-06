@@ -35,6 +35,7 @@ export type DoctorReport = {
   checks: DoctorCheck[];
   configuredConnectors: string[];
   missingDefaultConnectors: string[];
+  connectorMode: string;
 };
 
 export async function doctorDelxWellnessHermesProfile(options: DoctorOptions = {}): Promise<DoctorReport> {
@@ -65,6 +66,13 @@ export async function doctorDelxWellnessHermesProfile(options: DoctorOptions = {
     message: onboardingExists ? "ONBOARDING.md is installed" : "ONBOARDING.md is missing"
   });
 
+  const wellnessProfileExists = await exists(path.join(hermesHome, "wellness-profile.json"));
+  checks.push({
+    id: "wellness_profile",
+    ok: wellnessProfileExists,
+    message: wellnessProfileExists ? "wellness-profile.json is installed" : "wellness-profile.json is missing"
+  });
+
   const config = await readConfigIfPresent(configPath);
   checks.push({
     id: "config",
@@ -89,7 +97,10 @@ export async function doctorDelxWellnessHermesProfile(options: DoctorOptions = {
     }
   }
 
-  const configuredConnectors = Object.keys(asPlainObject(config?.mcp_servers));
+  const delxConfig = asPlainObject(config?.delx_wellness);
+  const connectorMode = asString(delxConfig.connector_mode) ?? "full";
+  const configuredServers = Object.keys(asPlainObject(config?.mcp_servers));
+  const configuredConnectors = configuredServers.filter((id) => id !== "delx_wellness_hub");
   const externalDirs = asStringArray(asPlainObject(config?.skills).external_dirs);
   checks.push({
     id: "skills_external_dir",
@@ -102,12 +113,15 @@ export async function doctorDelxWellnessHermesProfile(options: DoctorOptions = {
   const defaultConnectors = CONNECTOR_PRESETS
     .filter((preset) => preset.enabledByDefault)
     .map((preset) => preset.id);
-  const missingDefaultConnectors = defaultConnectors.filter((id) => !configuredConnectors.includes(id));
+  const expectedConnectors = configuredServers.includes("delx_wellness_hub")
+    ? []
+    : enabledDelxConnectors(delxConfig, defaultConnectors);
+  const missingDefaultConnectors = expectedConnectors.filter((id) => !configuredConnectors.includes(id));
   checks.push({
     id: "mcp_connectors",
     ok: missingDefaultConnectors.length === 0,
     message: missingDefaultConnectors.length === 0
-      ? "Default Delx Wellness MCP connectors are configured"
+      ? connectorSummary(connectorMode, configuredServers, configuredConnectors)
       : `Missing default MCP connectors: ${missingDefaultConnectors.join(", ")}`
   });
 
@@ -117,7 +131,8 @@ export async function doctorDelxWellnessHermesProfile(options: DoctorOptions = {
     ready: checks.every((check) => check.ok),
     checks,
     configuredConnectors,
-    missingDefaultConnectors
+    missingDefaultConnectors,
+    connectorMode
   };
 }
 
@@ -168,6 +183,29 @@ function asPlainObject(value: unknown): Record<string, unknown> {
 
 function asStringArray(value: unknown): string[] {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+}
+
+function asString(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
+function enabledDelxConnectors(delxConfig: Record<string, unknown>, fallback: string[]): string[] {
+  const connectors = delxConfig.connectors;
+  if (!Array.isArray(connectors)) return fallback;
+  const enabled = connectors
+    .filter((item): item is Record<string, unknown> => typeof item === "object" && item !== null && !Array.isArray(item))
+    .filter((item) => item.enabled === true)
+    .map((item) => item.id)
+    .filter((id): id is string => typeof id === "string");
+  return enabled.length > 0 ? enabled : fallback;
+}
+
+function connectorSummary(connectorMode: string, configuredServers: string[], configuredConnectors: string[]): string {
+  if (configuredServers.includes("delx_wellness_hub")) {
+    return "Configured hosted Delx Wellness hub";
+  }
+  const label = connectorMode === "custom" ? "custom" : connectorMode === "lite" ? "lite" : "full";
+  return `Configured ${label} MCP connectors: ${configuredConnectors.join(", ")}`;
 }
 
 function redactOutput(value: string): string {

@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { DEFAULT_PROFILE_NAME, resolveHermesHome, resolvePackageTemplatePath } from "./paths.js";
+import { stringifyWellnessProfile, type WellnessLanguage } from "./wellness-profile.js";
 
 export type OnboardingQuestion = {
   id: string;
@@ -13,6 +14,7 @@ export type OnboardingResult = {
   profileName: string;
   hermesHome: string;
   onboardingPath: string;
+  wellnessProfilePath: string;
   questions: OnboardingQuestion[];
   written: boolean;
 };
@@ -31,32 +33,78 @@ export const ONBOARDING_QUESTIONS: OnboardingQuestion[] = [
   { id: "safety_context", category: "safety", required: false, prompt: "Any injuries, pain, medical constraints, or symptoms the agent should treat as a reason to be conservative?" }
 ];
 
+const PT_BR_PROMPTS: Record<string, string> = {
+  preferred_name: "Como o agente deve te chamar?",
+  locale_timezone_units: "Qual idioma, fuso horário e sistema de medidas você prefere?",
+  body_basics: "Compartilhe idade ou ano de nascimento, altura, peso e gênero/sexo apenas se quiser que o agente use esse contexto.",
+  primary_goal: "Qual é seu principal objetivo de wellness agora?",
+  secondary_goals: "Quais objetivos secundários importam: perda de gordura, massa muscular, endurance, sono, recuperação, tênis, longevidade, estresse ou consistência?",
+  devices: "Quais fontes você usa: WHOOP, Garmin, Oura, Strava, Fitbit, Withings, Apple Health, Polar, Nourish ou Catálogo de Exercícios?",
+  training_context: "Quais esportes você treina, com que frequência, e como é uma semana normal?",
+  nutrition_context: "Que contexto nutricional o agente deve saber: refeições, calorias, macros, restrições, alergias ou preferências alimentares?",
+  exercise_preferences: "Quais equipamentos, local, duração, exercícios a evitar ou limitações os treinos devem respeitar?",
+  agent_preferences: "Você prefere respostas concisas no Telegram, explicações detalhadas, pt-BR, inglês, vídeos ou confirmações antes de registrar dados?",
+  safety_context: "Há lesões, dor, restrições médicas ou sintomas que o agente deve tratar como motivo para ser conservador?"
+};
+
 export async function createOnboardingFile(options: {
   profileName?: string;
   hermesHome?: string;
   packageRoot?: string;
   write?: boolean;
+  language?: WellnessLanguage;
 } = {}): Promise<OnboardingResult> {
   const profileName = options.profileName ?? DEFAULT_PROFILE_NAME;
   const hermesHome = options.hermesHome ?? resolveHermesHome(profileName);
   const onboardingPath = path.join(hermesHome, "ONBOARDING.md");
+  const wellnessProfilePath = path.join(hermesHome, "wellness-profile.json");
 
   if (options.write) {
     await fs.mkdir(hermesHome, { recursive: true });
     await fs.copyFile(resolvePackageTemplatePath("ONBOARDING.md", options.packageRoot), onboardingPath);
+    if (!(await exists(wellnessProfilePath))) {
+      await fs.writeFile(wellnessProfilePath, stringifyWellnessProfile(), "utf8");
+    }
   }
 
   return {
     profileName,
     hermesHome,
     onboardingPath,
-    questions: ONBOARDING_QUESTIONS,
+    wellnessProfilePath,
+    questions: localizedQuestions(options.language ?? "en"),
     written: Boolean(options.write)
   };
 }
 
-export function formatOnboardingQuestions(questions = ONBOARDING_QUESTIONS): string {
-  return questions
+export function formatOnboardingQuestions(
+  questions = ONBOARDING_QUESTIONS,
+  options: { language?: WellnessLanguage } = {}
+): string {
+  const selectedQuestions = options.language ? localizeQuestionSet(questions, options.language) : questions;
+  return selectedQuestions
     .map((question, index) => `${index + 1}. ${question.prompt}${question.required ? " [required]" : ""}`)
     .join("\n");
+}
+
+function localizedQuestions(language: WellnessLanguage): OnboardingQuestion[] {
+  return localizeQuestionSet(ONBOARDING_QUESTIONS, language);
+}
+
+function localizeQuestionSet(questions: OnboardingQuestion[], language: WellnessLanguage): OnboardingQuestion[] {
+  if (language === "en") return questions;
+  return questions.map((question) => ({
+    ...question,
+    prompt: PT_BR_PROMPTS[question.id] ?? question.prompt
+  }));
+}
+
+async function exists(filePath: string): Promise<boolean> {
+  try {
+    await fs.access(filePath);
+    return true;
+  } catch (error) {
+    if (typeof error === "object" && error !== null && "code" in error && error.code === "ENOENT") return false;
+    throw error;
+  }
 }

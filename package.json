@@ -1,6 +1,6 @@
 {
   "name": "delx-wellness-hermes",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Turn Hermes into a local-first wellness agent with guided setup, onboarding, MCP connector presets, wellness skills and doctor checks.",
   "license": "MIT",
   "homepage": "https://wellness.delx.ai/hermes",
@@ -35,7 +35,9 @@
     "skills",
     "templates",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "llms.txt",
+    "SECURITY.md"
   ],
   "exports": {
     ".": "./dist/index.js"
@@ -47,6 +49,8 @@
     "test": "npm run typecheck && tsx --test tests/*.test.ts",
     "prepack": "npm run build",
     "doctor": "tsx src/cli.ts doctor",
+    "e2e": "tsx src/cli.ts e2e",
+    "setup": "tsx src/cli.ts setup",
     "install:dry-run": "tsx src/cli.ts install --dry-run",
     "onboarding": "tsx src/cli.ts onboarding"
   },

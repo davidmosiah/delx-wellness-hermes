@@ -142,6 +142,10 @@ export function defaultConnectorIds(): ConnectorId[] {
     .map((preset) => preset.id);
 }
 
+export function liteConnectorIds(): ConnectorId[] {
+  return ["garmin", "nourish"];
+}
+
 export function buildLocalMcpServerConfig(preset: ConnectorPreset): HermesMcpServerConfig | undefined {
   if (!preset.packageName) return undefined;
   return {
