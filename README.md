@@ -6,7 +6,7 @@
 
 <h3 align="center">
   Turn <a href="https://github.com/NousResearch/hermes-agent">Hermes</a> into your personal wellness agent in <strong>one command</strong>.<br>
-  WHOOP · Oura · Garmin · Strava · Fitbit · Withings · Apple Health · Samsung Health · Polar · Nutrition &mdash; all local, all read-only.
+  WHOOP · Oura · Garmin · Strava · Fitbit · Google Health · Withings · Apple Health · Samsung Health · Polar · Nutrition &mdash; all local, all read-only.
 </h3>
 
 <p align="center">
@@ -24,7 +24,7 @@
 </p>
 
 <p align="center">
-  <strong>What is this?</strong> A one-command installer that wires <strong>10 wellness MCP connectors</strong> + a recovery-aware <code>SOUL.md</code> + onboarding + skills into a dedicated Hermes profile. No fork, no hosted vault, no token leaves your machine.
+  <strong>What is this?</strong> A one-command installer that wires <strong>11 wellness MCP connectors</strong> + a recovery-aware <code>SOUL.md</code> + onboarding + skills into a dedicated Hermes profile. No fork, no hosted vault, no token leaves your machine.
 </p>
 
 ---
@@ -38,7 +38,7 @@ npx -y delx-wellness-hermes setup
 hermes -p delx-wellness
 ```
 
-That's it. The installer creates `~/.hermes/profiles/delx-wellness`, installs the wellness skills, writes the MCP presets for all 10 connectors, runs a smoke test against Nourish (no OAuth required), and prints the next commands for model setup and per-provider auth.
+That's it. The installer creates `~/.hermes/profiles/delx-wellness`, installs the wellness skills, writes the MCP presets for all 11 connectors, runs a smoke test against Nourish (no OAuth required), and prints the next commands for model setup and per-provider auth.
 
 If this profile does not have a model configured yet:
 
@@ -62,7 +62,7 @@ hermes -p delx-wellness
 - **🚀 One profile, not ten configs.** Stop wiring connectors by hand &mdash; one command sets up the whole stack in a Hermes profile.
 - **💬 Built for daily use.** Real on Hermes terminal, Telegram and other MCP clients &mdash; not a one-off demo.
 - **🥗 Works immediately.** Nourish (local nutrition) is wired without OAuth, so you can chat about food the moment setup finishes.
-- **⌚ Nine wearable/export sources ready.** WHOOP, Garmin, Oura, Strava, Fitbit, Withings, Apple Health, Samsung Health and Polar presets included.
+- **⌚ Ten wearable/API/export sources ready.** WHOOP, Garmin, Oura, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health and Polar presets included.
 - **🧠 Onboarding-aware.** The agent gets your goals, schedule, equipment, dietary restrictions and conservative-decision rules **before** it gives advice.
 - **🔒 Local-first credentials.** Each provider's tokens live inside its own connector's local setup &mdash; nothing routed through a hosted vault.
 
@@ -90,6 +90,7 @@ flowchart LR
       G[garmin-mcp]
       S[strava-mcp]
       F[fitbit-mcp]
+      GH[google-health-mcp]
       Wi[withings-mcp]
       AH[apple-health-mcp]
       SH[samsung-health-mcp]
@@ -107,7 +108,7 @@ flowchart LR
     style H fill:#0F172A,stroke:#7C3AED,color:#fff
 ```
 
-<p align="center"><em>One profile · 10 connectors · zero hosted vault. <strong>Nourish works immediately</strong>; OAuth providers are one <code>auth</code> command away, and export connectors need a local file path.</em></p>
+<p align="center"><em>One profile · 11 connectors · zero hosted vault. <strong>Nourish works immediately</strong>; OAuth providers are one <code>auth</code> command away, and export connectors need a local file path.</em></p>
 
 ---
 
@@ -118,7 +119,7 @@ flowchart LR
 - creates or updates `~/.hermes/profiles/delx-wellness`
 - installs `SOUL.md`, `AGENTS.md` and `ONBOARDING.md`
 - installs Delx Wellness skills for **onboarding · daily brief · training · sleep · nutrition · setup**
-- writes local MCP presets for WHOOP, Garmin, Oura, Strava, Fitbit, Withings, Apple Health, Samsung Health, Polar and Nourish
+- writes local MCP presets for WHOOP, Garmin, Oura, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health, Polar and Nourish
 - runs Hermes profile checks when `hermes` is available
 - smoke-tests `nourish` through Hermes (it does not require OAuth)
 - prints the next commands for model setup, chat verification and connector auth
@@ -201,6 +202,7 @@ Default local MCP presets installed by `setup`:
 | **Oura** | [`oura-mcp-unofficial`](https://www.npmjs.com/package/oura-mcp-unofficial) | ✅ |
 | **Strava** | [`strava-mcp-unofficial`](https://www.npmjs.com/package/strava-mcp-unofficial) | ✅ |
 | **Fitbit** | [`fitbit-mcp-unofficial`](https://www.npmjs.com/package/fitbit-mcp-unofficial) | ✅ |
+| **Google Health** | [`google-health-mcp-unofficial`](https://www.npmjs.com/package/google-health-mcp-unofficial) | ✅ |
 | **Withings** | [`withings-mcp-unofficial`](https://www.npmjs.com/package/withings-mcp-unofficial) | ✅ |
 | **Apple Health** | [`apple-health-mcp-unofficial`](https://www.npmjs.com/package/apple-health-mcp-unofficial) | ⛔ (uses local export.zip) |
 | **Samsung Health** | [`samsung-health-mcp-unofficial`](https://www.npmjs.com/package/samsung-health-mcp-unofficial) | ⛔ (uses local CSV/ZIP export) |
@@ -257,7 +259,7 @@ npm pack --dry-run
 
 ## 🔗 See also
 
-- 🏠 **Connector registry** &mdash; [`delx-wellness`](https://github.com/davidmosiah/delx-wellness): the public map of all 10 wellness MCP connectors.
+- 🏠 **Connector registry** &mdash; [`delx-wellness`](https://github.com/davidmosiah/delx-wellness): the public map of all 11 wellness MCP connectors.
 - 🌐 **Site** &mdash; [wellness.delx.ai/hermes](https://wellness.delx.ai/hermes): live demo, FAQ, and copy-paste configs.
 - 🤖 **Hermes** &mdash; [`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent): the agent runtime this profile pack targets.
 
@@ -275,4 +277,4 @@ Follow on X: [@delx369](https://x.com/delx369)
 
 MIT &mdash; see [LICENSE](LICENSE).
 
-<sub>Hermes is a project of NousResearch. WHOOP, Oura, Garmin, Strava, Fitbit, Withings, Apple Health and Polar are trademarks of their respective owners. This profile pack is not affiliated with, endorsed by, or supported by any of them.</sub>
+<sub>Hermes is a project of NousResearch. WHOOP, Oura, Garmin, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health and Polar are trademarks of their respective owners. This profile pack is not affiliated with, endorsed by, or supported by any of them.</sub>

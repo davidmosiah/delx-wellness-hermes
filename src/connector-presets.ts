@@ -4,6 +4,7 @@ export type ConnectorId =
   | "oura"
   | "strava"
   | "fitbit"
+  | "google_health"
   | "withings"
   | "apple_health"
   | "samsung_health"
@@ -79,6 +80,16 @@ export const CONNECTOR_PRESETS = [
     category: "physiology",
     privacy: "oauth-local-token",
     notes: "Activity, sleep, heart rate, steps, and calorie context."
+  },
+  {
+    id: "google_health",
+    displayName: "Google Health",
+    packageName: "google-health-mcp-unofficial",
+    binaryName: "google-health-mcp-unofficial",
+    enabledByDefault: true,
+    category: "physiology",
+    privacy: "oauth-local-token",
+    notes: "Google Health API v4 beta identity, profile, settings, data points, reconcile, rollups, and Fitbit migration context."
   },
   {
     id: "withings",

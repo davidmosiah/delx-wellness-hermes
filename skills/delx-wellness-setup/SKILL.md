@@ -12,7 +12,7 @@ metadata:
 
 ## When to Use
 
-Use this when the user asks why a provider is missing, why a tool is unavailable, or how to connect WHOOP, Garmin, Oura, Strava, Fitbit, Withings, Apple Health, Samsung Health, Polar, Nourish, or Exercise Catalog.
+Use this when the user asks why a provider is missing, why a tool is unavailable, or how to connect WHOOP, Garmin, Oura, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health, Polar, Nourish, or Exercise Catalog.
 
 ## Procedure
 

@@ -36,6 +36,7 @@ test("Hermes profile config includes Delx Wellness skills, onboarding, and defau
   assert.ok(servers.oura);
   assert.ok(servers.strava);
   assert.ok(servers.fitbit);
+  assert.ok(servers.google_health);
   assert.ok(servers.withings);
   assert.ok(servers.apple_health);
   assert.ok(servers.samsung_health);

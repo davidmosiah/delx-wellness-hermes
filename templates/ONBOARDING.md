@@ -36,6 +36,7 @@ Check everything the user has or wants to connect:
 - Oura
 - Strava
 - Fitbit
+- Google Health
 - Withings
 - Apple Health
 - Polar

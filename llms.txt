@@ -7,6 +7,7 @@ Primary command: npm exec --yes --package=delx-wellness-hermes -- delx-wellness-
 MCP command: delx-wellness-hermes
 Agent surfaces:
 - See README for install and runtime surfaces.
+- Default profile presets include WHOOP, Garmin, Oura, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health, Polar and Nourish.
 - Start with the connection/status or agent-manifest surface when available.
 - Prefer JSON responses for automation and markdown responses for human summaries.
 Safety:

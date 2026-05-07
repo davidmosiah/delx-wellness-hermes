@@ -19,7 +19,7 @@ Use this immediately after installing the Delx Wellness Hermes profile, or when 
 1. Explain that onboarding helps personalize wellness context and connector setup.
 2. Ask for language, timezone, units, and optional body basics.
 3. Ask about goals: training, recovery, sleep, nutrition, stress, sport, body composition, longevity, or consistency.
-4. Ask which data sources they use: WHOOP, Garmin, Oura, Strava, Fitbit, Withings, Apple Health, Samsung Health, Polar, Nourish, Exercise Catalog.
+4. Ask which data sources they use: WHOOP, Garmin, Oura, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health, Polar, Nourish, Exercise Catalog.
 5. Ask about weekly training, sports, schedule, equipment, limitations, and preferred workout duration.
 6. Ask about nutrition preferences, food restrictions, calorie/macro goals, and whether to confirm before logging meals.
 7. Ask how they want Telegram responses: concise, detailed, pt-BR, English, videos, or evidence-heavy.
