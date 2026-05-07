@@ -6,6 +6,7 @@ export type ConnectorId =
   | "fitbit"
   | "withings"
   | "apple_health"
+  | "samsung_health"
   | "polar"
   | "nourish"
   | "exercise_catalog";
@@ -98,6 +99,16 @@ export const CONNECTOR_PRESETS = [
     category: "physiology",
     privacy: "local-first",
     notes: "Local Apple Health exports and aggregated wellness records."
+  },
+  {
+    id: "samsung_health",
+    displayName: "Samsung Health",
+    packageName: "samsung-health-mcp-unofficial",
+    binaryName: "samsung-health-mcp-unofficial",
+    enabledByDefault: true,
+    category: "physiology",
+    privacy: "local-first",
+    notes: "Local Samsung Health CSV/ZIP exports, Galaxy Watch sleep/activity, HRV, heart, and workout records."
   },
   {
     id: "polar",
