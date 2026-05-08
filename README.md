@@ -261,6 +261,7 @@ npm pack --dry-run
 
 - 🏠 **Connector registry** &mdash; [`delx-wellness`](https://github.com/davidmosiah/delx-wellness): the public map of all 11 wellness MCP connectors.
 - 🌐 **Site** &mdash; [wellness.delx.ai/hermes](https://wellness.delx.ai/hermes): live demo, FAQ, and copy-paste configs.
+- **OpenClaw sibling pack** &mdash; [`delx-wellness-openclaw`](https://github.com/davidmosiah/delx-wellness-openclaw): same wellness stack, OpenClaw-native `openclaw.json`, workspace and skills setup.
 - 🤖 **Hermes** &mdash; [`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent): the agent runtime this profile pack targets.
 
 ---
