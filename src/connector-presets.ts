@@ -9,6 +9,7 @@ export type ConnectorId =
   | "apple_health"
   | "samsung_health"
   | "polar"
+  | "eight_sleep"
   | "nourish"
   | "exercise_catalog";
 
@@ -130,6 +131,16 @@ export const CONNECTOR_PRESETS = [
     category: "physiology",
     privacy: "oauth-local-token",
     notes: "Training, recovery-adjacent, heart rate, and activity context."
+  },
+  {
+    id: "eight_sleep",
+    displayName: "Eight Sleep",
+    packageName: "eight-sleep-mcp-unofficial",
+    binaryName: "eight-sleep-mcp-unofficial",
+    enabledByDefault: false,
+    category: "physiology",
+    privacy: "oauth-local-token",
+    notes: "Smart-mattress sleep trends, smart-temperature schedule, alarms, and adjustable base. Mutations gated by EIGHT_SLEEP_ALLOW_MUTATIONS."
   },
   {
     id: "nourish",
