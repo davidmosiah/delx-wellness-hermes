@@ -11,6 +11,9 @@ export type ConnectorId =
   | "polar"
   | "eight_sleep"
   | "nourish"
+  | "wellness_air"
+  | "wellness_cycle_coach"
+  | "wellness_cgm"
   | "exercise_catalog";
 
 export type ConnectorPreset = {
@@ -151,6 +154,36 @@ export const CONNECTOR_PRESETS = [
     category: "nutrition",
     privacy: "local-first",
     notes: "Food search, meal parsing, local nutrition logging, barcode, and pt-BR input."
+  },
+  {
+    id: "wellness_air",
+    displayName: "Wellness Air",
+    packageName: "wellness-air",
+    binaryName: "wellness-air",
+    enabledByDefault: false,
+    category: "physiology",
+    privacy: "local-first",
+    notes: "Indoor air quality (PM2.5, CO2, VOC) via AirGradient API key or local IP. Pair with sleep/recovery to correlate environment with rest."
+  },
+  {
+    id: "wellness_cycle_coach",
+    displayName: "Wellness Cycle Coach",
+    packageName: "wellness-cycle-coach",
+    binaryName: "wellness-cycle-coach",
+    enabledByDefault: false,
+    category: "physiology",
+    privacy: "local-first",
+    notes: "Stateless menstrual-cycle coach (phase detection, nutrition + training guidance). Not medical advice. Off by default — opt-in based on user need."
+  },
+  {
+    id: "wellness_cgm",
+    displayName: "Wellness CGM",
+    packageName: "wellness-cgm-mcp",
+    binaryName: "wellness-cgm-mcp",
+    enabledByDefault: false,
+    category: "physiology",
+    privacy: "oauth-local-token",
+    notes: "Dexcom CGM with TIR/GMI/meal-response. NOT medical advice; do not use for emergency hypo/hyper detection. Sandbox mode works without real Dexcom credentials."
   },
   {
     id: "exercise_catalog",
