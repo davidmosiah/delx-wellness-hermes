@@ -9,7 +9,8 @@
     "url": "git+https://github.com/davidmosiah/delx-wellness-hermes.git"
   },
   "bugs": {
-    "url": "https://github.com/davidmosiah/delx-wellness-hermes/issues"
+    "url": "https://github.com/davidmosiah/delx-wellness-hermes/issues",
+    "email": "support@delx.ai"
   },
   "keywords": [
     "hermes",
