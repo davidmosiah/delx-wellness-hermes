@@ -1,0 +1,25 @@
+<svg width="1100" height="390" viewBox="0 0 1100 390" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Delx Wellness Hermes profile workflow</title>
+  <desc id="desc">Hermes profile setup installs skills, onboarding, SOUL.md and local MCP connector presets.</desc>
+  <rect width="1100" height="390" rx="24" fill="#0F172A"/>
+  <rect x="38" y="44" width="286" height="286" rx="18" fill="#3C1D00" stroke="#FDBA74" stroke-width="2"/>
+  <rect x="407" y="44" width="286" height="286" rx="18" fill="#052E16" stroke="#4ADE80" stroke-width="2"/>
+  <rect x="776" y="44" width="286" height="286" rx="18" fill="#172554" stroke="#60A5FA" stroke-width="2"/>
+  <text x="181" y="92" text-anchor="middle" fill="#FFEDD5" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="700">One command</text>
+  <text x="181" y="136" text-anchor="middle" fill="#FED7AA" font-family="Inter, Arial, sans-serif" font-size="18">delx-wellness-hermes setup</text>
+  <text x="181" y="172" text-anchor="middle" fill="#FED7AA" font-family="Inter, Arial, sans-serif" font-size="18">detects Hermes</text>
+  <text x="181" y="208" text-anchor="middle" fill="#FED7AA" font-family="Inter, Arial, sans-serif" font-size="18">runs Nourish smoke test</text>
+  <text x="550" y="92" text-anchor="middle" fill="#DCFCE7" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="700">Local profile</text>
+  <text x="550" y="136" text-anchor="middle" fill="#BBF7D0" font-family="Inter, Arial, sans-serif" font-size="18">SOUL.md + AGENTS.md</text>
+  <text x="550" y="172" text-anchor="middle" fill="#BBF7D0" font-family="Inter, Arial, sans-serif" font-size="18">onboarding + skills</text>
+  <text x="550" y="208" text-anchor="middle" fill="#BBF7D0" font-family="Inter, Arial, sans-serif" font-size="18">15 MCP presets</text>
+  <text x="919" y="92" text-anchor="middle" fill="#DBEAFE" font-family="Inter, Arial, sans-serif" font-size="27" font-weight="700">Wellness agent</text>
+  <text x="919" y="136" text-anchor="middle" fill="#BFDBFE" font-family="Inter, Arial, sans-serif" font-size="18">daily brief</text>
+  <text x="919" y="172" text-anchor="middle" fill="#BFDBFE" font-family="Inter, Arial, sans-serif" font-size="18">training + sleep</text>
+  <text x="919" y="208" text-anchor="middle" fill="#BFDBFE" font-family="Inter, Arial, sans-serif" font-size="18">nutrition context</text>
+  <path d="M344 187H387" stroke="#F8FAFC" stroke-width="5" stroke-linecap="round"/>
+  <path d="M374 172L391 187L374 202" stroke="#F8FAFC" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M713 187H756" stroke="#F8FAFC" stroke-width="5" stroke-linecap="round"/>
+  <path d="M743 172L760 187L743 202" stroke="#F8FAFC" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="550" y="352" text-anchor="middle" fill="#CBD5E1" font-family="Inter, Arial, sans-serif" font-size="18">No hosted token vault. Provider credentials stay inside each connector's local setup.</text>
+</svg>

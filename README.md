@@ -24,7 +24,11 @@
 </p>
 
 <p align="center">
-  <strong>What is this?</strong> A one-command installer that wires <strong>11 wellness MCP connectors</strong> + a recovery-aware <code>SOUL.md</code> + onboarding + skills into a dedicated Hermes profile. No fork, no hosted vault, no token leaves your machine.
+  <strong>What is this?</strong> A one-command installer that wires <strong>15 wellness MCP connectors</strong> + a recovery-aware <code>SOUL.md</code> + onboarding + skills into a dedicated Hermes profile. No fork, no hosted vault, no token leaves your machine.
+</p>
+
+<p align="center">
+  <img src="assets/hermes-wellness-demo.svg" alt="Delx Wellness Hermes profile workflow demo" width="92%" />
 </p>
 
 ---
@@ -38,7 +42,7 @@ npx -y delx-wellness-hermes setup
 hermes -p delx-wellness
 ```
 
-That's it. The installer creates `~/.hermes/profiles/delx-wellness`, installs the wellness skills, writes the MCP presets for all 11 connectors, runs a smoke test against Nourish (no OAuth required), and prints the next commands for model setup and per-provider auth.
+That's it. The installer creates `~/.hermes/profiles/delx-wellness`, installs the wellness skills, writes the MCP presets for all 15 connectors, runs a smoke test against Nourish (no OAuth required), and prints the next commands for model setup and per-provider auth.
 
 If this profile does not have a model configured yet:
 
@@ -62,7 +66,7 @@ hermes -p delx-wellness
 - **🚀 One profile, not ten configs.** Stop wiring connectors by hand &mdash; one command sets up the whole stack in a Hermes profile.
 - **💬 Built for daily use.** Real on Hermes terminal, Telegram and other MCP clients &mdash; not a one-off demo.
 - **🥗 Works immediately.** Nourish (local nutrition) is wired without OAuth, so you can chat about food the moment setup finishes.
-- **⌚ Ten wearable/API/export sources ready.** WHOOP, Garmin, Oura, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health and Polar presets included.
+- **15 connector presets ready.** WHOOP, Garmin, Oura, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health, Polar, Eight Sleep, Nourish, Air, Cycle Coach and CGM presets included.
 - **🧠 Onboarding-aware.** The agent gets your goals, schedule, equipment, dietary restrictions and conservative-decision rules **before** it gives advice.
 - **🔒 Local-first credentials.** Each provider's tokens live inside its own connector's local setup &mdash; nothing routed through a hosted vault.
 
@@ -207,7 +211,11 @@ Default local MCP presets installed by `setup`:
 | **Apple Health** | [`apple-health-mcp-unofficial`](https://www.npmjs.com/package/apple-health-mcp-unofficial) | ⛔ (uses local export.zip) |
 | **Samsung Health** | [`samsung-health-mcp-unofficial`](https://www.npmjs.com/package/samsung-health-mcp-unofficial) | ⛔ (uses local CSV/ZIP export) |
 | **Polar** | [`polar-mcp-unofficial`](https://www.npmjs.com/package/polar-mcp-unofficial) | ✅ |
+| **Eight Sleep** | [`eight-sleep-mcp-unofficial`](https://www.npmjs.com/package/eight-sleep-mcp-unofficial) | ✅ |
 | **Nourish** 🟢 | [`wellness-nourish`](https://www.npmjs.com/package/wellness-nourish) | ⛔ (works immediately) |
+| **Wellness Air** | [`wellness-air`](https://www.npmjs.com/package/wellness-air) | ✅ |
+| **Cycle Coach** | [`wellness-cycle-coach`](https://www.npmjs.com/package/wellness-cycle-coach) | ⛔ (profile-only context) |
+| **CGM** | [`wellness-cgm-mcp`](https://www.npmjs.com/package/wellness-cgm-mcp) | ✅ |
 
 Exercise Catalog is kept disabled by default because private catalog access may depend on non-public data.
 
@@ -259,7 +267,8 @@ npm pack --dry-run
 
 ## 🔗 See also
 
-- 🏠 **Connector registry** &mdash; [`delx-wellness`](https://github.com/davidmosiah/delx-wellness): the public map of all 11 wellness MCP connectors.
+- 🏠 **Connector registry** &mdash; [`delx-wellness`](https://github.com/davidmosiah/delx-wellness): the public map of all 15 wellness MCP connectors.
+- 🧰 **Agent workbench** &mdash; [`delx-agent-workbench`](https://github.com/davidmosiah/delx-agent-workbench): runnable prompts, MCP configs and profile templates for this stack.
 - 🌐 **Site** &mdash; [wellness.delx.ai/hermes](https://wellness.delx.ai/hermes): live demo, FAQ, and copy-paste configs.
 - **OpenClaw sibling pack** &mdash; [`delx-wellness-openclaw`](https://github.com/davidmosiah/delx-wellness-openclaw): same wellness stack, OpenClaw-native `openclaw.json`, workspace and skills setup.
 - 🤖 **Hermes** &mdash; [`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent): the agent runtime this profile pack targets.
