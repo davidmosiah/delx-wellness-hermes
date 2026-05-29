@@ -42,7 +42,7 @@ npx -y delx-wellness-hermes setup
 hermes -p delx-wellness
 ```
 
-That's it. The installer creates `~/.hermes/profiles/delx-wellness`, installs the wellness skills, writes the MCP presets for all 15 connectors, runs a smoke test against Nourish (no OAuth required), and prints the next commands for model setup and per-provider auth.
+That's it. The installer creates `~/.hermes/profiles/delx-wellness`, installs the wellness skills, wires the 11 default connectors (the other 4 opt-in providers are one flag away — see [Demo](#-demo)), runs a smoke test against Nourish (no OAuth required), and prints the next commands for model setup and per-provider auth.
 
 If this profile does not have a model configured yet:
 
@@ -58,6 +58,73 @@ curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scri
 npx -y delx-wellness-hermes setup
 hermes -p delx-wellness
 ```
+
+---
+
+## 🎬 Demo
+
+`setup` wires the 11 default connectors out of the box. The 4 opt-in providers
+(Eight Sleep, Wellness Air, Cycle Coach, CGM) are off by default — pass `--connectors`
+to wire all 15 catalogued presets in one command. Real captured output (paths shortened to `~`):
+
+```console
+$ npx -y delx-wellness-hermes setup \
+    --connectors whoop,garmin,oura,strava,fitbit,google_health,withings,apple_health,samsung_health,polar,eight_sleep,nourish,wellness_air,wellness_cycle_coach,wellness_cgm
+
+Delx Wellness for Hermes setup
+
+Profile: delx-wellness
+Path: ~/.hermes/profiles/delx-wellness
+
+Installed:
+- ~/.hermes/profiles/delx-wellness/config.yaml
+- ~/.hermes/profiles/delx-wellness/wellness-profile.json
+- ~/.hermes/profiles/delx-wellness/skills/delx-wellness
+- ~/.hermes/profiles/delx-wellness/SOUL.md
+- ~/.hermes/profiles/delx-wellness/AGENTS.md
+- ~/.hermes/profiles/delx-wellness/ONBOARDING.md
+
+Checks:
+- ok profile_home: Hermes profile home exists at ~/.hermes/profiles/delx-wellness
+- ok soul: SOUL.md is installed
+- ok onboarding: ONBOARDING.md is installed
+- ok wellness_profile: wellness-profile.json is installed
+- ok config: config.yaml is readable
+- ok skills_external_dir: Delx Wellness skills directory is registered
+- ok mcp_connectors: Configured custom MCP connectors: whoop, garmin, oura, strava, fitbit, google_health, withings, apple_health, samsung_health, polar, eight_sleep, nourish, wellness_air, wellness_cycle_coach, wellness_cgm
+
+Onboarding:
+- 4 required questions
+- 11 total context prompts
+
+Next steps:
+- Install Hermes from https://github.com/NousResearch/hermes-agent.
+- Then run: npx -y delx-wellness-hermes doctor --profile delx-wellness --run-hermes
+- Start Hermes with: hermes -p delx-wellness
+```
+
+> With Hermes already installed, `setup` also runs the profile/connector checks and prints the model + chat verification commands instead.
+
+That run writes **15 MCP server entries** into `~/.hermes/profiles/delx-wellness/config.yaml`,
+each as a local `npx -y <connector-package>` command — nothing hosted, no token in the config:
+
+```yaml
+mcp_servers:
+  whoop:
+    command: npx
+    args: [-y, whoop-mcp-unofficial]
+  garmin:
+    command: npx
+    args: [-y, garmin-mcp-unofficial]
+  # … oura, strava, fitbit, google_health, withings, apple_health,
+  #    samsung_health, polar, eight_sleep, wellness_air,
+  #    wellness_cycle_coach, wellness_cgm …
+  nourish:
+    command: npx
+    args: [-y, wellness-nourish]
+```
+
+Preview any selection without writing via `--dry-run`. Prefer a minimal install? `--connector-mode lite` wires just Garmin + Nourish.
 
 ---
 
@@ -112,7 +179,7 @@ flowchart LR
     style H fill:#0F172A,stroke:#7C3AED,color:#fff
 ```
 
-<p align="center"><em>One profile · 11 connectors · zero hosted vault. <strong>Nourish works immediately</strong>; OAuth providers are one <code>auth</code> command away, and export connectors need a local file path.</em></p>
+<p align="center"><em>One profile · 15 presets, 11 wired by default · zero hosted vault. <strong>Nourish works immediately</strong>; OAuth providers are one <code>auth</code> command away, and export connectors need a local file path.</em></p>
 
 ---
 
