@@ -6,4 +6,5 @@ export * from "./install.js";
 export * from "./onboarding.js";
 export * from "./paths.js";
 export * from "./setup.js";
+export * from "./uninstall.js";
 export * from "./wellness-profile.js";

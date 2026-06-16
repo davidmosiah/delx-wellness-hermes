@@ -136,6 +136,67 @@ export async function doctorDelxWellnessHermesProfile(options: DoctorOptions = {
   };
 }
 
+export function formatDoctorReport(report: DoctorReport): string {
+  const lines: string[] = [];
+  lines.push("Delx Wellness for Hermes doctor");
+  lines.push("");
+  lines.push(`Profile: ${report.profileName}`);
+  lines.push(`Path: ${report.hermesHome}`);
+  lines.push(`Result: ${report.ready ? "ready" : "needs attention"}`);
+  lines.push("");
+
+  lines.push("Checks:");
+  for (const check of report.checks) {
+    lines.push(`- ${check.ok ? "ok" : "needs attention"} ${check.id}: ${check.message}`);
+  }
+
+  const failing = report.checks.filter((check) => !check.ok);
+  if (failing.length > 0) {
+    lines.push("");
+    lines.push("To fix:");
+    const seen = new Set<string>();
+    for (const check of failing) {
+      const action = fixActionFor(check, report);
+      if (seen.has(action)) continue;
+      seen.add(action);
+      lines.push(`- ${action}`);
+    }
+  } else {
+    lines.push("");
+    lines.push("Everything looks good. Start the agent with:");
+    lines.push(`  hermes -p ${report.profileName}`);
+  }
+
+  return lines.join("\n");
+}
+
+function fixActionFor(check: DoctorCheck, report: DoctorReport): string {
+  switch (check.id) {
+    case "profile_home":
+    case "soul":
+    case "onboarding":
+    case "wellness_profile":
+    case "config":
+      return `Profile files are missing or incomplete — run: npx -y delx-wellness-hermes setup --profile ${report.profileName}`;
+    case "skills_external_dir":
+      return `Skills directory is not registered — re-run setup: npx -y delx-wellness-hermes setup --profile ${report.profileName}`;
+    case "mcp_connectors":
+      return `Default MCP connectors are missing (${report.missingDefaultConnectors.join(", ") || "see above"}) — re-run setup with connectors: npx -y delx-wellness-hermes setup --profile ${report.profileName}`;
+    case "hermes_version":
+      return "Hermes binary did not respond to --version — install Hermes from https://github.com/NousResearch/hermes-agent (or pass --hermes <path>).";
+    case "hermes_mcp_list":
+      return `Hermes could not list MCP servers — check the install, then re-run: npx -y delx-wellness-hermes doctor --profile ${report.profileName} --run-hermes`;
+    case "hermes_chat_runtime":
+      return `No model/provider is configured for this profile — run: hermes -p ${report.profileName} model`;
+    default:
+      if (check.id.startsWith("hermes_mcp_test_")) {
+        const connector = check.id.replace("hermes_mcp_test_", "");
+        return `Connector smoke test failed for "${connector}" — connect its credentials through the connector's own setup flow, then re-run doctor.`;
+      }
+      return `${check.id}: ${check.message}`;
+  }
+}
+
 async function runHermesCheck(id: string, command: string, args: string[]): Promise<DoctorCheck> {
   const timeout = hermesCheckTimeout(args);
   try {

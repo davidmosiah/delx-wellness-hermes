@@ -219,3 +219,30 @@ export function buildLocalMcpServerConfig(preset: ConnectorPreset): HermesMcpSer
     args: ["-y", preset.packageName]
   };
 }
+
+export function connectorNeedsOAuth(preset: ConnectorPreset): boolean {
+  return preset.privacy === "oauth-local-token";
+}
+
+export function formatConnectorPresets(presets: readonly ConnectorPreset[] = CONNECTOR_PRESETS): string {
+  const lines: string[] = [];
+  lines.push("Delx Wellness connector presets");
+  lines.push("");
+  lines.push("id                     default  oauth  category     privacy");
+  lines.push("---------------------  -------  -----  -----------  ------------------");
+  for (const preset of presets) {
+    lines.push(
+      [
+        preset.id.padEnd(21),
+        (preset.enabledByDefault ? "on" : "off").padEnd(7),
+        (connectorNeedsOAuth(preset) ? "yes" : "no").padEnd(5),
+        preset.category.padEnd(11),
+        preset.privacy
+      ].join("  ")
+    );
+  }
+  lines.push("");
+  lines.push("Enable a custom subset with: setup --connectors id1,id2");
+  lines.push("Use the lite preset (fast core) with: setup --connector-mode lite");
+  return lines.join("\n");
+}

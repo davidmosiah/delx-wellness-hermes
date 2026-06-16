@@ -8,6 +8,8 @@ import {
   createOnboardingFile,
   DEFAULT_WELLNESS_PROFILE,
   doctorDelxWellnessHermesProfile,
+  formatConnectorPresets,
+  formatDoctorReport,
   formatOnboardingQuestions,
   installDelxWellnessHermesProfile,
   liteConnectorIds,
@@ -15,7 +17,8 @@ import {
   parseHermesConfig,
   renderDryRunConfig,
   runDelxWellnessE2E,
-  setupDelxWellnessHermes
+  setupDelxWellnessHermes,
+  uninstallDelxWellnessHermesProfile
 } from "../src/index.ts";
 
 const packageRoot = process.cwd();
@@ -239,6 +242,28 @@ exit 2
   assert.equal(await exists(path.join(hermesHome, "config.yaml")), true);
 });
 
+test("setup --dry-run does not write any files", async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "delx-wellness-hermes-dryrun-"));
+  const hermesHome = path.join(tempDir, ".hermes", "profiles", "delx-wellness");
+
+  const setup = await setupDelxWellnessHermes({
+    hermesHome,
+    packageRoot,
+    dryRun: true
+  });
+
+  assert.equal(setup.dryRun, true);
+  assert.equal(setup.install.dryRun, true);
+  // The profile home must not exist — nothing was written.
+  assert.equal(await exists(hermesHome), false);
+  assert.equal(await exists(path.join(hermesHome, "config.yaml")), false);
+  assert.equal(await exists(path.join(hermesHome, "SOUL.md")), false);
+  assert.equal(await exists(path.join(hermesHome, "wellness-profile.json")), false);
+  // Dry-run still produces a redacted config preview for the user to review.
+  assert.match(setup.install.renderedConfig, /delx-wellness-hermes/);
+  assert.match(setup.nextSteps.join("\n"), /dry-run/i);
+});
+
 test("onboarding command model covers profile, goals, devices, nutrition, exercise, and safety", async () => {
   const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "delx-wellness-onboarding-"));
   const hermesHome = path.join(tempDir, ".hermes", "profiles", "delx-wellness");
@@ -372,6 +397,82 @@ exit 2
   assert.equal(report.ready, true);
   assert.match(report.response, /Next safest setup step/i);
   assert.match(report.error ?? "", /Next safest setup step/i);
+});
+
+test("uninstall dry-run reports the profile home without removing files", async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "delx-wellness-hermes-uninstall-dry-"));
+  const hermesHome = path.join(tempDir, ".hermes", "profiles", "delx-wellness");
+  await installDelxWellnessHermesProfile({ hermesHome, packageRoot, write: true });
+
+  const result = await uninstallDelxWellnessHermesProfile({ hermesHome });
+
+  assert.equal(result.dryRun, true);
+  assert.equal(result.existed, true);
+  assert.deepEqual(result.removedPaths, [hermesHome]);
+  // Nothing removed in dry-run.
+  assert.equal(await exists(path.join(hermesHome, "config.yaml")), true);
+});
+
+test("uninstall --write backs up config and removes the profile home", async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "delx-wellness-hermes-uninstall-"));
+  const hermesHome = path.join(tempDir, ".hermes", "profiles", "delx-wellness");
+  await installDelxWellnessHermesProfile({ hermesHome, packageRoot, write: true });
+  assert.equal(await exists(path.join(hermesHome, "config.yaml")), true);
+
+  const result = await uninstallDelxWellnessHermesProfile({ hermesHome, write: true });
+
+  assert.equal(result.dryRun, false);
+  assert.equal(result.existed, true);
+  assert.equal(await exists(hermesHome), false);
+  assert.ok(result.backupPath, "expected a config backup path");
+  assert.equal(await exists(result.backupPath!), true);
+  const backedUp = await fs.readFile(result.backupPath!, "utf8");
+  assert.match(backedUp, /delx-wellness-hermes/);
+});
+
+test("uninstall on a missing profile is a no-op", async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "delx-wellness-hermes-uninstall-missing-"));
+  const hermesHome = path.join(tempDir, ".hermes", "profiles", "delx-wellness");
+
+  const result = await uninstallDelxWellnessHermesProfile({ hermesHome, write: true });
+
+  assert.equal(result.existed, false);
+  assert.deepEqual(result.removedPaths, []);
+});
+
+test("uninstall refuses the default Hermes profile", async () => {
+  await assert.rejects(
+    () => uninstallDelxWellnessHermesProfile({ profileName: "default", write: true }),
+    /default Hermes profile/i
+  );
+});
+
+test("connectors listing shows ids, default state, and OAuth need", () => {
+  const text = formatConnectorPresets();
+  assert.match(text, /whoop/);
+  assert.match(text, /nourish/);
+  assert.match(text, /oauth/i);
+  // WHOOP is oauth + on by default; Nourish is local-first + on by default.
+  const whoopLine = text.split("\n").find((line) => line.startsWith("whoop"));
+  const nourishLine = text.split("\n").find((line) => line.startsWith("nourish"));
+  assert.match(whoopLine ?? "", /on/);
+  assert.match(whoopLine ?? "", /yes/);
+  assert.match(nourishLine ?? "", /on/);
+  assert.match(nourishLine ?? "", /no/);
+});
+
+test("doctor human report surfaces a To fix block for failing checks", async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "delx-wellness-hermes-doctorfmt-"));
+  const hermesHome = path.join(tempDir, ".hermes", "profiles", "delx-wellness");
+
+  // No install -> profile home missing -> failing checks.
+  const report = await doctorDelxWellnessHermesProfile({ hermesHome, packageRoot });
+  const text = formatDoctorReport(report);
+
+  assert.equal(report.ready, false);
+  assert.match(text, /needs attention/);
+  assert.match(text, /To fix:/);
+  assert.match(text, /delx-wellness-hermes setup/);
 });
 
 async function exists(filePath: string): Promise<boolean> {
