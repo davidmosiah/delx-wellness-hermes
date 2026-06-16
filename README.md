@@ -28,6 +28,10 @@
 </p>
 
 <p align="center">
+  <sub>🎯 <strong>Agent-readiness audited</strong> — the wearable connectors score <strong>90–97/100</strong> on <a href="https://github.com/davidmosiah/mcp-scorecard">mcp-scorecard</a>'s 10 checks. See the <a href="https://github.com/davidmosiah/delx-wellness#-agent-readiness">scored registry</a>.</sub>
+</p>
+
+<p align="center">
   <img src="assets/hermes-wellness-demo.svg" alt="Delx Wellness Hermes profile workflow demo" width="92%" />
 </p>
 
