@@ -88,7 +88,7 @@ export async function installDelxWellnessHermesProfile(options: InstallOptions =
   await fs.cp(packageSkillsDir, skillsDir, { recursive: true });
   changedFiles.push(skillsDir);
 
-  for (const templateName of ["SOUL.md", "AGENTS.md", "ONBOARDING.md"] as const) {
+  for (const templateName of ["SOUL.md", "AGENTS.md", "ONBOARDING.md", "DAILY_OPERATOR.md"] as const) {
     const destination = path.join(hermesHome, templateName);
     await backupIfExists(destination);
     await fs.copyFile(resolvePackageTemplatePath(templateName, options.packageRoot), destination);

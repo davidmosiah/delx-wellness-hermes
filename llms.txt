@@ -1,14 +1,16 @@
 # Delx Wellness Hermes
-Turn Hermes into a local-first wellness agent with guided setup, onboarding, MCP connector presets, wellness skills and doctor checks.
+Turn Hermes into a local-first wellness agent with guided setup, onboarding, MCP connector presets, wellness skills, doctor checks and a daily operator.
 Repository: https://github.com/davidmosiah/delx-wellness-hermes
 Homepage: https://wellness.delx.ai/hermes
 NPM: https://www.npmjs.com/package/delx-wellness-hermes
 Primary command: npm exec --yes --package=delx-wellness-hermes -- delx-wellness-hermes doctor
+Daily operator: npm exec --yes --package=delx-wellness-hermes -- delx-wellness-hermes operator --prompt-only
 MCP command: delx-wellness-hermes
 Agent surfaces:
 - See README for install and runtime surfaces.
 - OpenClaw sibling profile pack: https://github.com/davidmosiah/delx-wellness-openclaw
 - Default profile presets include WHOOP, Garmin, Oura, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health, Polar and Nourish.
+- For daily use, run the operator prompt through Hermes after setup.
 - Start with the connection/status or agent-manifest surface when available.
 - Prefer JSON responses for automation and markdown responses for human summaries.
 Safety:

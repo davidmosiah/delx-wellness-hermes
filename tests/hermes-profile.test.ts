@@ -6,9 +6,11 @@ import test from "node:test";
 import {
   buildHermesProfileConfig,
   createOnboardingFile,
+  createDailyOperatorFile,
   DEFAULT_WELLNESS_PROFILE,
   doctorDelxWellnessHermesProfile,
   formatConnectorPresets,
+  formatDailyOperatorPrompt,
   formatDoctorReport,
   formatOnboardingQuestions,
   installDelxWellnessHermesProfile,
@@ -157,8 +159,10 @@ test("installer write creates public-safe Hermes profile files", async () => {
   const soul = await fs.readFile(path.join(hermesHome, "SOUL.md"), "utf8");
   const agents = await fs.readFile(path.join(hermesHome, "AGENTS.md"), "utf8");
   const onboarding = await fs.readFile(path.join(hermesHome, "ONBOARDING.md"), "utf8");
+  const dailyOperator = await fs.readFile(path.join(hermesHome, "DAILY_OPERATOR.md"), "utf8");
   const wellnessProfile = JSON.parse(await fs.readFile(path.join(hermesHome, "wellness-profile.json"), "utf8")) as typeof DEFAULT_WELLNESS_PROFILE;
   const copiedSkill = await fs.readFile(path.join(hermesHome, "skills", "delx-wellness", "delx-wellness-onboarding", "SKILL.md"), "utf8");
+  const copiedOperatorSkill = await fs.readFile(path.join(hermesHome, "skills", "delx-wellness", "delx-wellness-daily-operator", "SKILL.md"), "utf8");
 
   assert.match(config, /delx-wellness-hermes/);
   assert.match(config, /skills\/delx-wellness/);
@@ -166,9 +170,11 @@ test("installer write creates public-safe Hermes profile files", async () => {
   assert.match(soul, /freshness/i);
   assert.match(agents, /Never print/i);
   assert.match(onboarding, /Devices and Data Sources/i);
+  assert.match(dailyOperator, /Daily Operator Prompt/i);
   assert.equal(wellnessProfile.schema, "delx-wellness-profile/v1");
   assert.deepEqual(wellnessProfile.preferences.language_priority, ["en", "pt-BR"]);
   assert.match(copiedSkill, /Delx Wellness Onboarding/i);
+  assert.match(copiedOperatorSkill, /Daily Operator loop/i);
 
   const doctor = await doctorDelxWellnessHermesProfile({ hermesHome, packageRoot });
   assert.equal(doctor.ready, true);
@@ -239,6 +245,7 @@ exit 2
   assert.equal(setup.hermesDetected, true);
   assert.equal(setup.doctor?.ready, true);
   assert.match(setup.nextSteps.join("\n"), /hermes -p delx-wellness model/);
+  assert.match(setup.nextSteps.join("\n"), /delx-wellness-hermes operator --prompt-only/);
   assert.equal(await exists(path.join(hermesHome, "config.yaml")), true);
 });
 
@@ -258,6 +265,7 @@ test("setup --dry-run does not write any files", async () => {
   assert.equal(await exists(hermesHome), false);
   assert.equal(await exists(path.join(hermesHome, "config.yaml")), false);
   assert.equal(await exists(path.join(hermesHome, "SOUL.md")), false);
+  assert.equal(await exists(path.join(hermesHome, "DAILY_OPERATOR.md")), false);
   assert.equal(await exists(path.join(hermesHome, "wellness-profile.json")), false);
   // Dry-run still produces a redacted config preview for the user to review.
   assert.match(setup.install.renderedConfig, /delx-wellness-hermes/);
@@ -286,6 +294,23 @@ test("onboarding supports global English default and pt-BR output", async () => 
   assert.match(english, /WHOOP, Garmin, Oura/i);
   assert.match(portuguese, /Como o agente deve te chamar/i);
   assert.match(portuguese, /lesões/i);
+});
+
+test("daily operator helper writes the operator template and prints a safe prompt", async () => {
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), "delx-wellness-hermes-operator-"));
+  const hermesHome = path.join(tempDir, ".hermes", "profiles", "delx-wellness");
+
+  const result = await createDailyOperatorFile({ hermesHome, packageRoot, write: true });
+  const written = await fs.readFile(result.operatorPath, "utf8");
+  const prompt = formatDailyOperatorPrompt();
+
+  assert.equal(result.written, true);
+  assert.equal(result.profileName, "delx-wellness");
+  assert.match(result.hermesCommand, /delx-wellness-hermes operator --prompt-only/);
+  assert.match(written, /Hermes Command/i);
+  assert.match(prompt, /Prefer delx-living-body/i);
+  assert.match(prompt, /Do not ask me to paste OAuth tokens/i);
+  assert.equal(/refresh token|api key|password/i.test(prompt.replace(/Do not ask me to paste OAuth tokens, refresh tokens, cookies, passwords, API keys/i, "")), false);
 });
 
 test("doctor honors lite profiles and reports wellness profile presence", async () => {

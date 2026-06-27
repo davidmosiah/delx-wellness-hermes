@@ -24,7 +24,7 @@
 </p>
 
 <p align="center">
-  <strong>What is this?</strong> A one-command installer that wires <strong>15 wellness MCP connectors</strong> + a recovery-aware <code>SOUL.md</code> + onboarding + skills into a dedicated Hermes profile. No fork, no hosted vault, no token leaves your machine.
+  <strong>What is this?</strong> A one-command installer and daily wellness operator that wires <strong>15 wellness MCP connectors</strong> + a recovery-aware <code>SOUL.md</code> + onboarding + skills into a dedicated Hermes profile. No fork, no hosted vault, no token leaves your machine.
 </p>
 
 <p align="center">
@@ -43,7 +43,7 @@ If Hermes is already installed:
 
 ```bash
 npx -y delx-wellness-hermes setup
-hermes -p delx-wellness
+hermes -p delx-wellness -z "$(npx -y delx-wellness-hermes operator --prompt-only)"
 ```
 
 That's it. The installer creates `~/.hermes/profiles/delx-wellness`, installs the wellness skills, wires the 11 default connectors (the other 4 opt-in providers are one flag away — see [Demo](#-demo)), runs a smoke test against Nourish (no OAuth required), and prints the next commands for model setup and per-provider auth.
@@ -60,7 +60,7 @@ If you are new to Hermes, install Hermes first:
 ```bash
 curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash -s -- --skip-setup
 npx -y delx-wellness-hermes setup
-hermes -p delx-wellness
+hermes -p delx-wellness -z "$(npx -y delx-wellness-hermes operator --prompt-only)"
 ```
 
 ---
@@ -135,6 +135,7 @@ Preview any selection without writing via `--dry-run`. Prefer a minimal install?
 ## 🎯 Why use it
 
 - **🚀 One profile, not ten configs.** Stop wiring connectors by hand &mdash; one command sets up the whole stack in a Hermes profile.
+- **🧭 Daily operator included.** Run one command for a recovery, nutrition and missing-setup plan that starts with available local data.
 - **💬 Built for daily use.** Real on Hermes terminal, Telegram and other MCP clients &mdash; not a one-off demo.
 - **🥗 Works immediately.** Nourish (local nutrition) is wired without OAuth, so you can chat about food the moment setup finishes.
 - **15 connector presets ready.** WHOOP, Garmin, Oura, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health, Polar, Eight Sleep, Nourish, Air, Cycle Coach and CGM presets included.
@@ -193,7 +194,8 @@ flowchart LR
 
 - creates or updates `~/.hermes/profiles/delx-wellness`
 - installs `SOUL.md`, `AGENTS.md` and `ONBOARDING.md`
-- installs Delx Wellness skills for **onboarding · daily brief · training · sleep · nutrition · setup**
+- installs `DAILY_OPERATOR.md` with the copyable daily operator prompt
+- installs Delx Wellness skills for **onboarding · daily brief · daily operator · training · sleep · nutrition · setup**
 - writes local MCP presets for WHOOP, Garmin, Oura, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health, Polar and Nourish
 - runs Hermes profile checks when `hermes` is available
 - smoke-tests `nourish` through Hermes (it does not require OAuth)
@@ -203,6 +205,19 @@ Preview before writing:
 
 ```bash
 npx -y delx-wellness-hermes setup --dry-run
+```
+
+Preview the operator prompt:
+
+```bash
+npx -y delx-wellness-hermes operator
+npx -y delx-wellness-hermes operator --prompt-only
+```
+
+Copy `DAILY_OPERATOR.md` into the active profile without running setup again:
+
+```bash
+npx -y delx-wellness-hermes operator --write
 ```
 
 Skip the Nourish smoke test:

@@ -3,6 +3,7 @@ import { doctorDelxWellnessHermesProfile, formatDoctorReport } from "./doctor.js
 import { runDelxWellnessE2E } from "./e2e.js";
 import { installDelxWellnessHermesProfile } from "./install.js";
 import { createOnboardingFile, formatOnboardingQuestions } from "./onboarding.js";
+import { createDailyOperatorFile } from "./operator.js";
 import { formatSetupResult, setupDelxWellnessHermes } from "./setup.js";
 import { uninstallDelxWellnessHermesProfile, type UninstallResult } from "./uninstall.js";
 import type { DoctorReport } from "./doctor.js";
@@ -143,6 +144,32 @@ async function main(argv: string[]): Promise<void> {
     const formatOptions: Parameters<typeof formatOnboardingQuestions>[1] = {};
     if (language !== undefined) formatOptions.language = language;
     console.log(formatOnboardingQuestions(result.questions, formatOptions));
+    return;
+  }
+
+  if (parsed.command === "operator") {
+    const operatorOptions: Parameters<typeof createDailyOperatorFile>[0] = {
+      profileName: stringOption(parsed.options.profile, "delx-wellness"),
+      write: parsed.options.write === true
+    };
+    const result = await createDailyOperatorFile(operatorOptions);
+
+    if (parsed.options["prompt-only"] === true) {
+      console.log(result.prompt);
+      return;
+    }
+
+    console.log("Delx Wellness Daily Operator");
+    console.log("");
+    console.log(`Profile: ${result.profileName}`);
+    console.log(`Profile template: ${result.operatorPath}`);
+    console.log(`Written: ${result.written ? "yes" : "no"}`);
+    console.log("");
+    console.log("Hermes command:");
+    console.log(result.hermesCommand);
+    console.log("");
+    console.log("--- prompt ---");
+    console.log(result.prompt);
     return;
   }
 
@@ -327,6 +354,7 @@ function printUsage(): void {
   delx-wellness-hermes doctor --profile delx-wellness --run-hermes
   delx-wellness-hermes doctor --profile delx-wellness --run-hermes --test-chat
   delx-wellness-hermes onboarding --profile delx-wellness [--language en|pt-BR]
+  delx-wellness-hermes operator --profile delx-wellness [--write|--prompt-only]
   delx-wellness-hermes e2e --profile delx-wellness --test-connectors nourish [--json]
 `);
 }

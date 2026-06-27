@@ -22,6 +22,8 @@ export function resolveProfileSkillsDir(hermesHome: string): string {
   return path.join(hermesHome, "skills", "delx-wellness");
 }
 
-export function resolvePackageTemplatePath(name: "SOUL.md" | "AGENTS.md" | "ONBOARDING.md", packageRoot = resolvePackageRoot()): string {
+export type PackageTemplateName = "SOUL.md" | "AGENTS.md" | "ONBOARDING.md" | "DAILY_OPERATOR.md";
+
+export function resolvePackageTemplatePath(name: PackageTemplateName, packageRoot = resolvePackageRoot()): string {
   return path.join(packageRoot, "templates", name);
 }

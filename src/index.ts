@@ -4,6 +4,7 @@ export * from "./doctor.js";
 export * from "./e2e.js";
 export * from "./install.js";
 export * from "./onboarding.js";
+export * from "./operator.js";
 export * from "./paths.js";
 export * from "./setup.js";
 export * from "./uninstall.js";

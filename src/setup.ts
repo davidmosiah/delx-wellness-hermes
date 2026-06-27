@@ -234,6 +234,7 @@ function nextStepsFor(options: {
     return [
       "Install Hermes from https://github.com/NousResearch/hermes-agent.",
       `Then run: npx -y delx-wellness-hermes doctor --profile ${options.profileName} --run-hermes`,
+      `Preview the daily operator prompt: npx -y delx-wellness-hermes operator --profile ${options.profileName}`,
       `Start Hermes with: hermes -p ${options.profileName}`
     ];
   }
@@ -254,6 +255,7 @@ function nextStepsFor(options: {
   }
 
   steps.push(
+    `Run the daily operator: hermes -p ${options.profileName} -z "$(npx -y delx-wellness-hermes operator --prompt-only)"`,
     `Start the wellness agent: hermes -p ${options.profileName}`,
     "Connect provider credentials only through each connector's setup flow; never paste OAuth tokens into chat."
   );
