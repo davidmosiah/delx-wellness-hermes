@@ -220,6 +220,26 @@ Copy `DAILY_OPERATOR.md` into the active profile without running setup again:
 npx -y delx-wellness-hermes operator --write
 ```
 
+### Personal Recado cron assets
+
+For a personal Hermes cron that sends one daily Telegram note from WHOOP +
+Nourish, use the versioned templates:
+
+- `templates/recado_context.py` reads the local WHOOP digest plus recent
+  Nourish `intake.jsonl` entries and prints a read-only context block.
+- `templates/recado_prompt.txt` keeps the Telegram answer short, causal and
+  explicit about missing food data.
+
+Useful runtime overrides:
+
+```bash
+RECADO_USER_NAME=David \
+RECADO_NOURISH_PROFILE=david \
+RECADO_LOCAL_TZ=America/Fortaleza \
+RECADO_FOOD_LOOKBACK_DAYS=2 \
+python3 ~/.hermes/scripts/recado_context.py
+```
+
 Skip the Nourish smoke test:
 
 ```bash
