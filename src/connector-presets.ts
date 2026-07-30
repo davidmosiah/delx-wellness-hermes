@@ -162,7 +162,7 @@ export const CONNECTOR_PRESETS = [
     id: "nourish",
     displayName: "Nourish",
     packageName: "wellness-nourish",
-    packageVersion: "0.7.2",
+    packageVersion: "0.7.3",
     binaryName: "wellness-nourish",
     enabledByDefault: true,
     category: "nutrition",
