@@ -20,6 +20,8 @@ export type ConnectorPreset = {
   id: ConnectorId;
   displayName: string;
   packageName?: string | undefined;
+  /** Pinned npm version for reproducible Hermes MCP installs (SOTA community default). */
+  packageVersion?: string | undefined;
   binaryName?: string | undefined;
   enabledByDefault: boolean;
   category: "physiology" | "activity" | "nutrition" | "exercise";
@@ -39,6 +41,7 @@ export const CONNECTOR_PRESETS = [
     id: "whoop",
     displayName: "WHOOP",
     packageName: "whoop-mcp-unofficial",
+    packageVersion: "0.5.4",
     binaryName: "whoop-mcp-unofficial",
     enabledByDefault: true,
     category: "physiology",
@@ -49,6 +52,7 @@ export const CONNECTOR_PRESETS = [
     id: "garmin",
     displayName: "Garmin",
     packageName: "garmin-mcp-unofficial",
+    packageVersion: "0.5.5",
     binaryName: "garmin-mcp-unofficial",
     enabledByDefault: true,
     category: "physiology",
@@ -59,6 +63,7 @@ export const CONNECTOR_PRESETS = [
     id: "oura",
     displayName: "Oura",
     packageName: "oura-mcp-unofficial",
+    packageVersion: "0.4.8",
     binaryName: "oura-mcp-unofficial",
     enabledByDefault: true,
     category: "physiology",
@@ -69,6 +74,7 @@ export const CONNECTOR_PRESETS = [
     id: "strava",
     displayName: "Strava",
     packageName: "strava-mcp-unofficial",
+    packageVersion: "0.4.8",
     binaryName: "strava-mcp-unofficial",
     enabledByDefault: true,
     category: "activity",
@@ -79,6 +85,7 @@ export const CONNECTOR_PRESETS = [
     id: "fitbit",
     displayName: "Fitbit",
     packageName: "fitbit-mcp-unofficial",
+    packageVersion: "0.4.7",
     binaryName: "fitbit-mcp-unofficial",
     enabledByDefault: true,
     category: "physiology",
@@ -89,6 +96,7 @@ export const CONNECTOR_PRESETS = [
     id: "google_health",
     displayName: "Google Health",
     packageName: "google-health-mcp-unofficial",
+    packageVersion: "0.5.4",
     binaryName: "google-health-mcp-unofficial",
     enabledByDefault: true,
     category: "physiology",
@@ -99,6 +107,7 @@ export const CONNECTOR_PRESETS = [
     id: "withings",
     displayName: "Withings",
     packageName: "withings-mcp-unofficial",
+    packageVersion: "0.4.9",
     binaryName: "withings-mcp-unofficial",
     enabledByDefault: true,
     category: "physiology",
@@ -109,6 +118,7 @@ export const CONNECTOR_PRESETS = [
     id: "apple_health",
     displayName: "Apple Health",
     packageName: "apple-health-mcp-unofficial",
+    packageVersion: "0.5.0",
     binaryName: "apple-health-mcp-unofficial",
     enabledByDefault: true,
     category: "physiology",
@@ -119,6 +129,7 @@ export const CONNECTOR_PRESETS = [
     id: "samsung_health",
     displayName: "Samsung Health",
     packageName: "samsung-health-mcp-unofficial",
+    packageVersion: "0.5.0",
     binaryName: "samsung-health-mcp-unofficial",
     enabledByDefault: true,
     category: "physiology",
@@ -129,6 +140,7 @@ export const CONNECTOR_PRESETS = [
     id: "polar",
     displayName: "Polar",
     packageName: "polar-mcp-unofficial",
+    packageVersion: "0.3.11",
     binaryName: "polar-mcp-unofficial",
     enabledByDefault: true,
     category: "physiology",
@@ -139,6 +151,7 @@ export const CONNECTOR_PRESETS = [
     id: "eight_sleep",
     displayName: "Eight Sleep",
     packageName: "eight-sleep-mcp-unofficial",
+    packageVersion: "0.2.6",
     binaryName: "eight-sleep-mcp-unofficial",
     enabledByDefault: false,
     category: "physiology",
@@ -149,6 +162,7 @@ export const CONNECTOR_PRESETS = [
     id: "nourish",
     displayName: "Nourish",
     packageName: "wellness-nourish",
+    packageVersion: "0.7.1",
     binaryName: "wellness-nourish",
     enabledByDefault: true,
     category: "nutrition",
@@ -159,6 +173,7 @@ export const CONNECTOR_PRESETS = [
     id: "wellness_air",
     displayName: "Wellness Air",
     packageName: "wellness-air",
+    packageVersion: "0.5.7",
     binaryName: "wellness-air",
     enabledByDefault: false,
     category: "physiology",
@@ -169,6 +184,7 @@ export const CONNECTOR_PRESETS = [
     id: "wellness_cycle_coach",
     displayName: "Wellness Cycle Coach",
     packageName: "wellness-cycle-coach",
+    packageVersion: "0.3.6",
     binaryName: "wellness-cycle-coach",
     enabledByDefault: false,
     category: "physiology",
@@ -179,6 +195,7 @@ export const CONNECTOR_PRESETS = [
     id: "wellness_cgm",
     displayName: "Wellness CGM",
     packageName: "wellness-cgm-mcp",
+    packageVersion: "0.4.1",
     binaryName: "wellness-cgm-mcp",
     enabledByDefault: false,
     category: "physiology",
@@ -214,9 +231,13 @@ export function liteConnectorIds(): ConnectorId[] {
 
 export function buildLocalMcpServerConfig(preset: ConnectorPreset): HermesMcpServerConfig | undefined {
   if (!preset.packageName) return undefined;
+  // Pin when known: reproducible agent installs (OpenClaw-class DX). Unpinned packages stay floating.
+  const spec = preset.packageVersion
+    ? `${preset.packageName}@${preset.packageVersion}`
+    : preset.packageName;
   return {
     command: "npx",
-    args: ["-y", preset.packageName]
+    args: ["-y", spec]
   };
 }
 

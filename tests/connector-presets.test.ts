@@ -106,8 +106,24 @@ test("buildLocalMcpServerConfig returns valid {command, args} shape for public c
     assert.ok(cfg, `Public preset ${preset.id} returned undefined config`);
     assert.equal(cfg!.command, "npx");
     assert.ok(Array.isArray(cfg!.args), `Preset ${preset.id} config.args must be an array`);
-    assert.ok(cfg!.args!.includes(preset.packageName), `Preset ${preset.id} args missing packageName`);
+    const expectedSpec = preset.packageVersion
+      ? `${preset.packageName}@${preset.packageVersion}`
+      : preset.packageName;
+    assert.ok(
+      cfg!.args!.includes(expectedSpec),
+      `Preset ${preset.id} args missing pinned package spec ${expectedSpec}`,
+    );
     assert.ok(cfg!.args!.includes("-y"), `Preset ${preset.id} args missing -y flag (non-interactive npx)`);
+  }
+});
+
+test("public connectors pin a known-good packageVersion for reproducible installs", () => {
+  for (const preset of CONNECTOR_PRESETS) {
+    if (!preset.packageName) continue;
+    assert.ok(
+      typeof preset.packageVersion === "string" && /^\d+\.\d+\.\d+$/.test(preset.packageVersion),
+      `Public preset ${preset.id} must pin packageVersion (semver)`,
+    );
   }
 });
 
