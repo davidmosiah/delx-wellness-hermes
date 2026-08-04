@@ -1,3 +1,8 @@
+## 0.3.4 - 2026-08-04
+
+### Changed
+- Refresh public connector `packageVersion` pins to current npm latest (Google Health **0.7.3**, nourish **0.8.0**, whoop **0.6.0**, garmin **0.7.0**, and the rest of the fleet). Generated Hermes `mcp_servers` configs now install known-good SOTA builds instead of stale 0.5.x pins.
+
 ## 0.3.3 - 2026-07-30
 
 ### Changed
