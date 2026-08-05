@@ -1,3 +1,15 @@
+## 0.3.5 - 2026-08-05
+
+### Changed
+- Pin matrix: garmin 0.7.1, strava/fitbit 0.6.0, polar 0.5.0, whoop 0.6.1, google-health 0.7.3.
+- Training skill prefers agent-safe-series tools over raw dense dumps.
+
+## Unreleased
+
+### Changed
+- Pin matrix: garmin 0.7.1, strava 0.6.0, fitbit 0.6.0, whoop 0.6.1, polar 0.4.1, google-health 0.7.3.
+
+
 ## 0.3.4 - 2026-08-04
 
 ### Changed

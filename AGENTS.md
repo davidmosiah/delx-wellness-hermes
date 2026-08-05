@@ -20,3 +20,6 @@ This repo packages the Delx Wellness Hermes profile, onboarding, skills and MCP 
 - Keep setup idempotent and safe to re-run.
 - Keep Nourish as the no-OAuth smoke path.
 - When connector behavior changes materially, update the Delx Wellness registry/docs surfaces too.
+
+## Agent-safe series
+Prefer `*_heart_series` / `*_activity_series` tools over raw dense sample dumps (agent-safe-series/v1).

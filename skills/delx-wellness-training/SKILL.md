@@ -39,3 +39,6 @@ Use this when the user asks if they should train hard, rest, play tennis, lift, 
 ## Verification
 
 The recommendation should be traceable to live or recent wellness data, or clearly marked as low-confidence.
+
+## Dense time-series
+Prefer `garmin_activity_series`, `strava_activity_series`, `fitbit_heart_series`, `polar_heart_series` (agent-safe-series/v1) over raw stream dumps.
