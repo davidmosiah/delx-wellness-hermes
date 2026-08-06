@@ -42,3 +42,5 @@ The recommendation should be traceable to live or recent wellness data, or clear
 
 ## Dense time-series
 Prefer `garmin_activity_series`, `strava_activity_series`, `fitbit_heart_series`, `polar_heart_series` (agent-safe-series/v1) over raw stream dumps.
+
+**Never** dump raw continuous streams, full-resolution sample arrays, or unscoped export payloads unless the user gave **explicit_user_intent** for that dense dump. Default path is always the capped series tools.
