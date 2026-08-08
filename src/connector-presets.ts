@@ -107,7 +107,7 @@ export const CONNECTOR_PRESETS = [
     id: "withings",
     displayName: "Withings",
     packageName: "withings-mcp-unofficial",
-    packageVersion: "0.5.0",
+    packageVersion: "0.5.1",
     binaryName: "withings-mcp-unofficial",
     enabledByDefault: true,
     category: "physiology",

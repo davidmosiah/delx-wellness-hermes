@@ -1,3 +1,8 @@
+## 0.3.7 - 2026-08-08
+
+### Changed
+- Pins: `whoop-mcp-unofficial@0.6.1`, `withings-mcp-unofficial@0.5.1` (garmin already `0.7.2`).
+
 ## 0.3.6 - 2026-08-06
 
 ### Changed
