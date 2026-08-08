@@ -52,7 +52,7 @@ export const CONNECTOR_PRESETS = [
     id: "garmin",
     displayName: "Garmin",
     packageName: "garmin-mcp-unofficial",
-    packageVersion: "0.7.1",
+    packageVersion: "0.7.2",
     binaryName: "garmin-mcp-unofficial",
     enabledByDefault: true,
     category: "physiology",

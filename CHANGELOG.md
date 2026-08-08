@@ -1,3 +1,8 @@
+## 0.3.6 - 2026-08-06
+
+### Changed
+- Pin `garmin-mcp-unofficial@0.7.2` (Body Battery daily report fix #20).
+
 ## 0.3.5 - 2026-08-05
 
 ### Changed
