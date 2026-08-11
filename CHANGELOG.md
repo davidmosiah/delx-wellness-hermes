@@ -45,6 +45,11 @@
 
 # Changelog
 
+## 0.3.9
+
+- Pins: fleet high-deps security wave (oura/strava/fitbit/google-health/withings/apple/samsung/polar/eight-sleep/nourish/air/cycle/cgm).
+
+
 ## 0.3.8
 
 - Pins: `whoop-mcp-unofficial@0.6.2`, `garmin-mcp-unofficial@0.7.3` (high transitive overrides).

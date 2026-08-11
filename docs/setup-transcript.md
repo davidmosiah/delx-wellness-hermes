@@ -7,7 +7,7 @@ This is the **expected shape** of a dry-run setup. Paths are generic (`~/.hermes
 ## Command
 
 ```bash
-npx -y delx-wellness-hermes@0.3.8 setup --dry-run
+npx -y delx-wellness-hermes@0.3.9 setup --dry-run
 ```
 
 ## Expected output (captured 2026-08-11, hermes pack 0.3.7)
@@ -39,37 +39,37 @@ mcp_servers:
     command: npx
     args:
       - -y
-      - oura-mcp-unofficial@0.6.1
+      - oura-mcp-unofficial@0.6.2
   strava:
     command: npx
     args:
       - -y
-      - strava-mcp-unofficial@0.6.0
+      - strava-mcp-unofficial@0.6.1
   fitbit:
     command: npx
     args:
       - -y
-      - fitbit-mcp-unofficial@0.6.0
+      - fitbit-mcp-unofficial@0.6.1
   google_health:
     command: npx
     args:
       - -y
-      - google-health-mcp-unofficial@0.7.3
+      - google-health-mcp-unofficial@0.7.4
   withings:
     command: npx
     args:
       - -y
-      - withings-mcp-unofficial@0.5.1
+      - withings-mcp-unofficial@0.5.2
   apple_health:
     command: npx
     args:
       - -y
-      - apple-health-mcp-unofficial@0.7.1
+      - apple-health-mcp-unofficial@0.7.2
   samsung_health:
     command: npx
     args:
       - -y
-      - samsung-health-mcp-unofficial@0.7.1
+      - samsung-health-mcp-unofficial@0.7.2
   polar:
     command: npx
     args:
@@ -79,7 +79,7 @@ mcp_servers:
     command: npx
     args:
       - -y
-      - wellness-nourish@0.8.0
+      - wellness-nourish@0.8.1
 delx_wellness:
   profile_name: delx-wellness
   mode: local
@@ -215,7 +215,7 @@ Expected side effects (high level):
 ## Lite mode
 
 ```bash
-npx -y delx-wellness-hermes@0.3.8 setup --dry-run --connector-mode lite
+npx -y delx-wellness-hermes@0.3.9 setup --dry-run --connector-mode lite
 ```
 
 Wires a smaller default set (see README — Garmin + Nourish oriented lite path).
@@ -223,8 +223,8 @@ Wires a smaller default set (see README — Garmin + Nourish oriented lite path)
 ## Verification
 
 ```bash
-npx -y delx-wellness-hermes@0.3.8 connectors
-npx -y delx-wellness-hermes@0.3.8 doctor --profile delx-wellness
+npx -y delx-wellness-hermes@0.3.9 connectors
+npx -y delx-wellness-hermes@0.3.9 doctor --profile delx-wellness
 ```
 
 Do not paste real token paths, emails, or OAuth codes into issues.
