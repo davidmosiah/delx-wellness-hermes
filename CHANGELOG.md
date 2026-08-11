@@ -44,3 +44,8 @@
 ## 0.3.1 - 2026-07-30
 
 # Changelog
+
+## 0.3.8
+
+- Pins: `whoop-mcp-unofficial@0.6.2`, `garmin-mcp-unofficial@0.7.3` (high transitive overrides).
+

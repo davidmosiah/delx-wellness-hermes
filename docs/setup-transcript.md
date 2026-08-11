@@ -7,7 +7,7 @@ This is the **expected shape** of a dry-run setup. Paths are generic (`~/.hermes
 ## Command
 
 ```bash
-npx -y delx-wellness-hermes@0.3.7 setup --dry-run
+npx -y delx-wellness-hermes@0.3.8 setup --dry-run
 ```
 
 ## Expected output (captured 2026-08-11, hermes pack 0.3.7)
@@ -29,12 +29,12 @@ mcp_servers:
     command: npx
     args:
       - -y
-      - whoop-mcp-unofficial@0.6.1
+      - whoop-mcp-unofficial@0.6.2
   garmin:
     command: npx
     args:
       - -y
-      - garmin-mcp-unofficial@0.7.2
+      - garmin-mcp-unofficial@0.7.3
   oura:
     command: npx
     args:
@@ -215,7 +215,7 @@ Expected side effects (high level):
 ## Lite mode
 
 ```bash
-npx -y delx-wellness-hermes@0.3.7 setup --dry-run --connector-mode lite
+npx -y delx-wellness-hermes@0.3.8 setup --dry-run --connector-mode lite
 ```
 
 Wires a smaller default set (see README — Garmin + Nourish oriented lite path).
@@ -223,8 +223,8 @@ Wires a smaller default set (see README — Garmin + Nourish oriented lite path)
 ## Verification
 
 ```bash
-npx -y delx-wellness-hermes@0.3.7 connectors
-npx -y delx-wellness-hermes@0.3.7 doctor --profile delx-wellness
+npx -y delx-wellness-hermes@0.3.8 connectors
+npx -y delx-wellness-hermes@0.3.8 doctor --profile delx-wellness
 ```
 
 Do not paste real token paths, emails, or OAuth codes into issues.
