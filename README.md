@@ -130,6 +130,8 @@ mcp_servers:
 
 Preview any selection without writing via `--dry-run`. Prefer a minimal install? `--connector-mode lite` wires just Garmin + Nourish.
 
+Sanitized **expected dry-run shape** (pins + connector catalog, no secrets): [`docs/setup-transcript.md`](docs/setup-transcript.md).
+
 ---
 
 ## 🎯 Why use it
