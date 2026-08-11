@@ -45,6 +45,11 @@
 
 # Changelog
 
+## 0.3.10
+
+- Pins: hono 4.13.1 security wave across fleet (garmin/whoop/oura/…/nourish/living-body).
+
+
 ## 0.3.9
 
 - Pins: fleet high-deps security wave (oura/strava/fitbit/google-health/withings/apple/samsung/polar/eight-sleep/nourish/air/cycle/cgm).
