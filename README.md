@@ -401,6 +401,6 @@ Follow on X: [@delx369](https://x.com/delx369)
 
 ## 📜 License
 
-MIT &mdash; see [LICENSE](LICENSE).
+MIT &mdash; see [LICENSE](LICENSE). Community: [Code of Conduct](CODE_OF_CONDUCT.md).
 
 <sub>Hermes is a project of NousResearch. WHOOP, Oura, Garmin, Strava, Fitbit, Google Health, Withings, Apple Health, Samsung Health and Polar are trademarks of their respective owners. This profile pack is not affiliated with, endorsed by, or supported by any of them.</sub>
