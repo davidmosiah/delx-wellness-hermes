@@ -376,7 +376,7 @@ npm pack --dry-run
 ## 🔗 See also
 
 - 🏠 **Connector registry** &mdash; [`delx-wellness`](https://github.com/davidmosiah/delx-wellness): the public map of all 15 wellness MCP connectors.
-- 🧰 **Agent workbench** &mdash; [`delx-agent-workbench`](https://github.com/davidmosiah/delx-agent-workbench): runnable prompts, MCP configs and profile templates for this stack.
+- 🧰 **Run it in your agent** &mdash; [install matrix and client configs](https://github.com/davidmosiah/delx-wellness#run-it-in-your-agent): runnable prompts, MCP configs and profile templates for this stack.
 - 🌐 **Site** &mdash; [wellness.delx.ai/hermes](https://wellness.delx.ai/hermes): live demo, FAQ, and copy-paste configs.
 - **OpenClaw sibling pack** &mdash; [`delx-wellness-openclaw`](https://github.com/davidmosiah/delx-wellness-openclaw): same wellness stack, OpenClaw-native `openclaw.json`, workspace and skills setup.
 - 🤖 **Hermes** &mdash; [`NousResearch/hermes-agent`](https://github.com/NousResearch/hermes-agent): the agent runtime this profile pack targets.
