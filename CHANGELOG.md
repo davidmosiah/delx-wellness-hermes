@@ -1,3 +1,8 @@
+## 0.3.11 - 2026-08-26
+
+### Changed
+- Pins: garmin `0.7.5`, eight-sleep `0.2.11`, google-health `0.7.7`, oura `0.7.1`, strava `0.6.3`, whoop `0.6.4` (fixes and OAuth hardening now on npm).
+
 ## 0.3.7 - 2026-08-08
 
 ### Changed
