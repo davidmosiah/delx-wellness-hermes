@@ -47,7 +47,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "test": "npm run typecheck && tsx --test tests/*.test.ts",
+    "test": "npm run typecheck && npm run build && node --import tsx --test tests/*.test.ts",
     "prepack": "npm run build",
     "doctor": "tsx src/cli.ts doctor",
     "e2e": "tsx src/cli.ts e2e",

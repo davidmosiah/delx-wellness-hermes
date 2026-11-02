@@ -363,6 +363,14 @@ It must **not** contain:
 
 ---
 
+## Validation and platform scope
+
+The existing CI runs on Ubuntu with Node.js 22. Profile-path validation includes real Linux installer/uninstaller entrypoint regressions using isolated temporary profiles, including traversal and symlink rejection with unchanged protected test data.
+
+Native Windows/macOS filesystem behavior (including case, normalization and path aliases) has not been validated by this regression harness. Windows-specific lexical checks are not a substitute for native OS tests. These checks are not a sandbox and do not establish protection against concurrent same-user filesystem changes (TOCTOU). Explicit custom paths and operator-configured HOME or `.hermes` relocation remain trusted operator configuration; no universal platform-safety guarantee is claimed.
+
+---
+
 ## 🧪 Development
 
 ```bash
