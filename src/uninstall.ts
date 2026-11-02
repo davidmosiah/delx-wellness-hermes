@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { DEFAULT_PROFILE_NAME, resolveHermesHome } from "./paths.js";
+import { assertSafeProfileMutation, assertNotSymlink } from "./profile-path-safety.js";
 
 export type UninstallOptions = {
   profileName?: string;
@@ -31,7 +32,9 @@ export async function uninstallDelxWellnessHermesProfile(options: UninstallOptio
   }
 
   const hermesHome = options.hermesHome ?? resolveHermesHome(profileName);
+  await assertSafeProfileMutation(profileName, hermesHome, options.hermesHome !== undefined);
   const configPath = path.join(hermesHome, "config.yaml");
+  await assertNotSymlink(configPath);
   const existed = await exists(hermesHome);
   const dryRun = !options.write;
 
@@ -54,6 +57,7 @@ export async function uninstallDelxWellnessHermesProfile(options: UninstallOptio
   const backupPath = await backupConfig(configPath, hermesHome);
   if (backupPath) result.backupPath = backupPath;
 
+  await assertSafeProfileMutation(profileName, hermesHome, options.hermesHome !== undefined);
   await fs.rm(hermesHome, { recursive: true, force: true });
   return result;
 }
@@ -80,3 +84,4 @@ async function exists(filePath: string): Promise<boolean> {
     throw error;
   }
 }
+

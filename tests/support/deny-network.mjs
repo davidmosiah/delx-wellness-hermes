@@ -1,0 +1,14 @@
+import net from 'node:net';
+import tls from 'node:tls';
+import dns from 'node:dns';
+import dgram from 'node:dgram';
+import { syncBuiltinESMExports } from 'node:module';
+const deny = () => { throw new Error('Offline harness forbids network'); };
+net.connect = net.createConnection = deny;
+net.Socket.prototype.connect = deny;
+tls.connect = deny;
+dns.lookup = dns.resolve = deny;
+dns.promises.lookup = dns.promises.resolve = deny;
+dgram.createSocket = deny;
+globalThis.fetch = deny;
+syncBuiltinESMExports();
