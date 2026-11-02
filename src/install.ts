@@ -16,6 +16,7 @@ import {
   resolvePackageTemplatePath
 } from "./paths.js";
 import { stringifyWellnessProfile } from "./wellness-profile.js";
+import { assertProfileName, assertSafeProfileMutation, assertNotSymlink } from "./profile-path-safety.js";
 
 export type InstallOptions = Omit<BuildHermesProfileConfigOptions, "skillsDir"> & {
   profileName?: string;
@@ -36,15 +37,23 @@ export type InstallResult = {
 
 export async function installDelxWellnessHermesProfile(options: InstallOptions = {}): Promise<InstallResult> {
   const profileName = options.profileName ?? DEFAULT_PROFILE_NAME;
+  assertProfileName(profileName);
   if (profileName === "default" && options.write) {
     throw new Error("Refusing to write into the default Hermes profile. Use --profile delx-wellness.");
   }
 
   const hermesHome = options.hermesHome ?? resolveHermesHome(profileName);
+  if (options.write) await assertSafeProfileMutation(profileName, hermesHome, options.hermesHome !== undefined);
   const configPath = path.join(hermesHome, "config.yaml");
   const wellnessProfilePath = path.join(hermesHome, "wellness-profile.json");
   const packageSkillsDir = resolvePackageSkillsDir(options.packageRoot);
   const skillsDir = options.skillsDir ?? resolveProfileSkillsDir(hermesHome);
+  if (options.write) {
+    await assertSafeProfileMutation(profileName, skillsDir, true);
+    for (const candidate of [configPath, wellnessProfilePath, path.join(hermesHome, "skills"), skillsDir, ...["SOUL.md", "AGENTS.md", "ONBOARDING.md", "DAILY_OPERATOR.md"].map((name) => path.join(hermesHome, name))]) {
+      await assertNotSymlink(candidate);
+    }
+  }
   const generated = buildHermesProfileConfig({
     ...options,
     profileName,
@@ -83,6 +92,9 @@ export async function installDelxWellnessHermesProfile(options: InstallOptions =
     changedFiles.push(wellnessProfilePath);
   }
 
+  await assertSafeProfileMutation(profileName, hermesHome, options.hermesHome !== undefined);
+  await assertSafeProfileMutation(profileName, skillsDir, true);
+  await assertNotSymlink(path.join(hermesHome, "skills"));
   await fs.rm(skillsDir, { recursive: true, force: true });
   await fs.mkdir(path.dirname(skillsDir), { recursive: true });
   await fs.cp(packageSkillsDir, skillsDir, { recursive: true });
@@ -138,3 +150,4 @@ async function exists(filePath: string): Promise<boolean> {
 function isNotFound(error: unknown): boolean {
   return typeof error === "object" && error !== null && "code" in error && error.code === "ENOENT";
 }
+
